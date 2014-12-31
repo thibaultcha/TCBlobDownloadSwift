@@ -10,22 +10,20 @@ import XCTest
 import TCBlobDownloadSwift
 
 let kDefaultTimeout: NSTimeInterval = 2.0
-let kValidURL: NSURL = NSURL(string: "http://httpbin.org/stream-bytes/")!
+let kHttpbinURL = NSURL(string: "http://httpbin.org")
+let kValidURL = NSURL(string: "https://github.com/thibaultCha/TCBlobDownload/archive/master.zip")
+let kInvalidURL = NSURL(string: "hello world")
 
-class DownloadHandler: NSObject, TCBlobDownloadDelegate {
-    let expectation: XCTestExpectation
-    var finishAssertion: ()?
-    
-    init(expectation: XCTestExpectation) {
-        self.expectation = expectation
+class Httpbin {
+    class func status(status: Int) -> NSURL {
+        return NSURL(string: "status/\(status)", relativeToURL: kHttpbinURL)!
     }
-    
-    func download(download: TCBlobDownload, didFinishWithError: NSError?) {
-        expectation.fulfill()
+    class func fixtureWithBytes(bytes: Int = 20) -> NSURL {
+        return NSURL(string: "bytes/\(bytes)", relativeToURL: kHttpbinURL)!
     }
 }
 
-class TCBlobDownloadSwiftTests: XCTestCase {
+class TCBlobDownloadManagerTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
@@ -37,22 +35,94 @@ class TCBlobDownloadSwiftTests: XCTestCase {
     
     func testSharedInstance() {
         let manager: TCBlobDownloadManager = TCBlobDownloadManager.sharedInstance
-        let manager2 = TCBlobDownloadManager.sharedInstance
         XCTAssertNotNil(manager, "sharedInstance is nil.")
-        XCTAssertTrue(manager === manager2, "sharedInstance is not a singleton")
+        XCTAssert(manager === TCBlobDownloadManager.sharedInstance, "sharedInstance is not a singleton")
     }
     
-    func testDownloadFileAtURL() {
-        var expectation = self.expectationWithDescription("should download a file????")
-        let handler = DownloadHandler(expectation: expectation)
+    func testDownloadFileAtURLWithDelegate_call_methods() {
+        let expectation = self.expectationWithDescription("should call the delegate methods")
+        class DownloadHandler: NSObject, TCBlobDownloadDelegate {
+            let expectation: XCTestExpectation
+            var didProgressCalled = false
+            var didFinishCalled = false
+            init(expectation: XCTestExpectation) {
+                self.expectation = expectation
+            }
+            func download(download: TCBlobDownload, didProgress progress: Float, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
+                didProgressCalled = true
+            }
+            func download(download: TCBlobDownload, didFinishWithError error: NSError?) {
+                didFinishCalled = true
+                expectation.fulfill()
+            }
+        }
+        
+        let downloadHandler = DownloadHandler(expectation: expectation)
+        
+        TCBlobDownloadManager.sharedInstance.downloadFileAtURL(Httpbin.fixtureWithBytes(), withDelegate: downloadHandler)
 
-        TCBlobDownloadManager.sharedInstance.downloadFileAtURL(kValidURL, withDelegate: handler)
-
-        self.waitForExpectationsWithTimeout(kDefaultTimeout, handler: { (error: NSError!) -> Void in
-            if (error != nil) {
+        self.waitForExpectationsWithTimeout(kDefaultTimeout) { (error) in
+            if error != nil {
                 println(error)
             }
-        })
+        }
+        
+        XCTAssertTrue(downloadHandler.didProgressCalled, "downloadDidProgress not called")
+        XCTAssertTrue(downloadHandler.didFinishCalled, "downloadDidFinish not called")
     }
     
+    func testDownloadFileAtURLWithDelegate_methods_parameters() {
+        let expectation = self.expectationWithDescription("should call the delegate methods with the correct parameters")
+        class DownloadHandler: NSObject, TCBlobDownloadDelegate {
+            let expectation: XCTestExpectation
+            init(expectation: XCTestExpectation) {
+                self.expectation = expectation
+            }
+            func download(download: TCBlobDownload, didProgress progress: Float, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
+                XCTAssert(10 == totalBytesWritten)
+                XCTAssert(10 == totalBytesExpectedToWrite)
+                XCTAssert(1.0 == progress)
+            }
+            func download(download: TCBlobDownload, didFinishWithError error: NSError?) {
+                expectation.fulfill()
+            }
+        }
+        
+        let downloadHandler = DownloadHandler(expectation: expectation)
+        
+        TCBlobDownloadManager.sharedInstance.downloadFileAtURL(Httpbin.fixtureWithBytes(bytes: 10), withDelegate: downloadHandler)
+        
+        self.waitForExpectationsWithTimeout(kDefaultTimeout) { (error) in
+            if error != nil {
+                println(error)
+            }
+        }
+    }
+    
+    func testDownloadFileAtURLWithDelegate_invalid_response() {
+        let expectation = self.expectationWithDescription("should report any error to the delegate")
+        class DownloadHandler: NSObject, TCBlobDownloadDelegate {
+            let expectation: XCTestExpectation
+            init(expectation: XCTestExpectation) {
+                self.expectation = expectation
+            }
+            func download(download: TCBlobDownload, didProgress progress: Float, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
+
+            }
+            func download(download: TCBlobDownload, didFinishWithError error: NSError?) {
+                XCTAssertNotNil(error, "No error returned for a 404 status")
+                expectation.fulfill()
+            }
+        }
+        
+        let downloadHandler = DownloadHandler(expectation: expectation)
+
+        TCBlobDownloadManager.sharedInstance.downloadFileAtURL(Httpbin.status(404), withDelegate: downloadHandler)
+        
+        self.waitForExpectationsWithTimeout(kDefaultTimeout) { (error) in
+            if error != nil {
+                println(error)
+            }
+        }
+    }
 }

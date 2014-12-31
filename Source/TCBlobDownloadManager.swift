@@ -27,15 +27,18 @@ public class TCBlobDownloadManager {
     }
     
     init() {
-        // TODO replace with backgroundSession
+        // TODO: replace with backgroundSession. Gives an unkown error for now.
         let config = NSURLSessionConfiguration.defaultSessionConfiguration()
         self.delegate = DownloadDelegate()
         self.session = NSURLSession(configuration: config, delegate: self.delegate, delegateQueue: nil)
     }
     
-    public func downloadFileAtURL(url: NSURL?, withDelegate delegate: TCBlobDownloadDelegate?) -> TCBlobDownload {
-        let downloadTask = self.session.downloadTaskWithURL(url!)
-        let download = TCBlobDownload(downloadTask: downloadTask, fileName: url!.absoluteString!, destinationPath: "", delegate: delegate)
+    /**
+        Start a download at given URL with an optional delegate
+    */
+    public func downloadFileAtURL(url: NSURL, withDelegate delegate: TCBlobDownloadDelegate?) -> TCBlobDownload {
+        let downloadTask = self.session.downloadTaskWithURL(url)
+        let download = TCBlobDownload(downloadTask: downloadTask, fileName: nil, destinationPath: "", delegate: delegate)
 
         self.delegate.downloads[download.downloadTask.hash] = download
         
@@ -54,7 +57,12 @@ public class TCBlobDownloadManager {
         }
         
         func URLSession(session: NSURLSession, downloadTask: NSURLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
-            println("did write data")
+            let download = self.downloads[downloadTask.hash]!
+            let progress: Float = totalBytesExpectedToWrite == NSURLSessionTransferSizeUnknown ? -1 : Float(totalBytesWritten) / Float(totalBytesExpectedToWrite)
+            
+            download.delegate?.download(download, didProgress: progress, totalBytesWritten: totalBytesWritten, totalBytesExpectedToWrite: totalBytesExpectedToWrite)
+            
+            println("Downloaded \(totalBytesWritten)/\(totalBytesExpectedToWrite) bytes. Progress: \(progress)")
         }
         
         func URLSession(session: NSURLSession, downloadTask: NSURLSessionDownloadTask, didFinishDownloadingToURL location: NSURL) {
@@ -62,13 +70,18 @@ public class TCBlobDownloadManager {
         }
         
         func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError error: NSError?) {
-            let finishedDL = self.downloads[task.hash]
-            finishedDL?.delegate?.download(finishedDL!, didFinishWithError: error)
+            let download = self.downloads[task.hash]!
+            download.delegate?.download(download, didFinishWithError: error)
+
+            // Remove reference to the download
             self.downloads.removeValueForKey(task.hash)
         }
     }
 }
 
+// MARK: TCBlobDownloadDelegate
+
 public protocol TCBlobDownloadDelegate {
-    func download(download: TCBlobDownload, didFinishWithError: NSError?) -> Void
+    func download(download: TCBlobDownload, didProgress progress: Float, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64)
+    func download(download: TCBlobDownload, didFinishWithError: NSError?)
 }
