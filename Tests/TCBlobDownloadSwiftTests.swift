@@ -100,7 +100,7 @@ class TCBlobDownloadManagerTests: XCTestCase {
     }
     
     func testDownloadFileAtURLWithDelegate_invalid_response() {
-        let expectation = self.expectationWithDescription("should report any error to the delegate")
+        let expectation = self.expectationWithDescription("should report any HTTP error")
         class DownloadHandler: NSObject, TCBlobDownloadDelegate {
             let expectation: XCTestExpectation
             init(expectation: XCTestExpectation) {
@@ -110,7 +110,10 @@ class TCBlobDownloadManagerTests: XCTestCase {
 
             }
             func download(download: TCBlobDownload, didFinishWithError error: NSError?) {
-                XCTAssertNotNil(error, "No error returned for a 404 status")
+                XCTAssertNotNil(error, "No error returned for an erroneous HTTP status code")
+                XCTAssertNotNil(error?.userInfo?[NSLocalizedDescriptionKey], "Error userInfo is missing localized description")
+                XCTAssert(error?.userInfo?["status"] as NSValue == 404, "Error userInfo is missing status")
+                XCTAssert(error?.userInfo?[NSURLErrorKey] as NSString == Httpbin.status(404).absoluteString!, "Error userInfo has wrong NSURLErrorKey value")
                 expectation.fulfill()
             }
         }
