@@ -59,7 +59,7 @@ class TCBlobDownloadManagerTests: XCTestCase {
         
         let downloadHandler = DownloadHandler(expectation: expectation)
         
-        TCBlobDownloadManager.sharedInstance.downloadFileAtURL(Httpbin.fixtureWithBytes(), withDelegate: downloadHandler)
+        TCBlobDownloadManager.sharedInstance.downloadFileAtURL(Httpbin.fixtureWithBytes(), toDirectory: nil, withName: nil, andDelegate: downloadHandler)
 
         self.waitForExpectationsWithTimeout(kDefaultTimeout) { (error) in
             if error != nil {
@@ -90,7 +90,7 @@ class TCBlobDownloadManagerTests: XCTestCase {
         
         let downloadHandler = DownloadHandler(expectation: expectation)
         
-        TCBlobDownloadManager.sharedInstance.downloadFileAtURL(Httpbin.fixtureWithBytes(bytes: 10), withDelegate: downloadHandler)
+        TCBlobDownloadManager.sharedInstance.downloadFileAtURL(Httpbin.fixtureWithBytes(bytes: 10), toDirectory: nil, withName: nil, andDelegate: downloadHandler)
         
         self.waitForExpectationsWithTimeout(kDefaultTimeout) { (error) in
             if error != nil {
@@ -107,20 +107,46 @@ class TCBlobDownloadManagerTests: XCTestCase {
                 self.expectation = expectation
             }
             func download(download: TCBlobDownload, didProgress progress: Float, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
-
+                // assert progress is -1
             }
             func download(download: TCBlobDownload, didFinishWithError error: NSError?) {
                 XCTAssertNotNil(error, "No error returned for an erroneous HTTP status code")
-                XCTAssertNotNil(error?.userInfo?[NSLocalizedDescriptionKey], "Error userInfo is missing localized description")
-                XCTAssert(error?.userInfo?["status"] as NSValue == 404, "Error userInfo is missing status")
-                XCTAssert(error?.userInfo?[NSURLErrorKey] as NSString == Httpbin.status(404).absoluteString!, "Error userInfo has wrong NSURLErrorKey value")
+                XCTAssertNotNil(error?.userInfo?[TCBlobDownloadErrorDescriptionKey], "Error userInfo is missing localized description")
+                XCTAssert(error?.userInfo?[TCBlobDownloadErrorHTTPStatusKey] as? NSValue == 404, "Error userInfo is missing status")
+                XCTAssert(error?.userInfo?[TCBlobDownloadErrorFailingURLKey] as? NSString == Httpbin.status(404).absoluteString!, "Error userInfo has wrong NSURLErrorKey value")
                 expectation.fulfill()
             }
         }
         
         let downloadHandler = DownloadHandler(expectation: expectation)
 
-        TCBlobDownloadManager.sharedInstance.downloadFileAtURL(Httpbin.status(404), withDelegate: downloadHandler)
+        TCBlobDownloadManager.sharedInstance.downloadFileAtURL(Httpbin.status(404), toDirectory: nil, withName: nil, andDelegate: downloadHandler)
+        
+        self.waitForExpectationsWithTimeout(kDefaultTimeout) { (error) in
+            if error != nil {
+                println(error)
+            }
+        }
+    }
+    
+    func testDownloadFileAtURLWithDelegate_download_file() {
+        let expectation = self.expectationWithDescription("should move the downloaded file at the specified location")
+        class DownloadHandler: NSObject, TCBlobDownloadDelegate {
+            let expectation: XCTestExpectation
+            init(expectation: XCTestExpectation) {
+                self.expectation = expectation
+            }
+            func download(download: TCBlobDownload, didProgress progress: Float, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
+                
+            }
+            func download(download: TCBlobDownload, didFinishWithError error: NSError?) {
+                expectation.fulfill()
+            }
+        }
+        
+        let downloadHandler = DownloadHandler(expectation: expectation)
+        
+        TCBlobDownloadManager.sharedInstance.downloadFileAtURL(Httpbin.fixtureWithBytes(bytes: 1024), toDirectory: nil, withName: nil, andDelegate: downloadHandler)
         
         self.waitForExpectationsWithTimeout(kDefaultTimeout) { (error) in
             if error != nil {

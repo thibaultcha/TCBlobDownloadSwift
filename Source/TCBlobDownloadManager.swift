@@ -8,7 +8,10 @@
 
 import Foundation
 
-public let kTCBlobDownloadErrorDomain = "com.tcblobwodwnloadswift.error"
+public let TCBlobDownloadErrorDomain = "com.tcblobdownloadswift.error"
+public let TCBlobDownloadErrorDescriptionKey = "TCBlobDownloadErrorDescriptionKey"
+public let TCBlobDownloadErrorFailingURLKey = "TCBlobDownloadFailingURLKey"
+public let TCBlobDownloadErrorHTTPStatusKey = "TCBlobDownloadErrorHTTPStatusKey"
 
 public enum TCBlobDownloadError: Int {
     case TCBlobDownloadHTTPError = 1
@@ -42,9 +45,9 @@ public class TCBlobDownloadManager {
     /**
         Start a download at given URL with an optional delegate
     */
-    public func downloadFileAtURL(url: NSURL, withDelegate delegate: TCBlobDownloadDelegate?) -> TCBlobDownload {
+    public func downloadFileAtURL(url: NSURL, toDirectory directory: NSString?, withName name: NSString?, andDelegate delegate: TCBlobDownloadDelegate?) -> TCBlobDownload {
         let downloadTask = self.session.downloadTaskWithURL(url)
-        let download = TCBlobDownload(downloadTask: downloadTask, fileName: nil, destinationPath: "", delegate: delegate)
+        let download = TCBlobDownload(downloadTask: downloadTask, fileName: name, destinationPath: directory, delegate: delegate)
 
         self.delegate.downloads[download.downloadTask.taskIdentifier] = download
         
@@ -69,7 +72,7 @@ public class TCBlobDownloadManager {
         
         func URLSession(session: NSURLSession, downloadTask: NSURLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
             let download = self.downloads[downloadTask.taskIdentifier]!
-            let progress: Float = totalBytesExpectedToWrite == NSURLSessionTransferSizeUnknown ? -1 : Float(totalBytesWritten) / Float(totalBytesExpectedToWrite)
+            let progress = totalBytesExpectedToWrite == NSURLSessionTransferSizeUnknown ? -1 : Float(totalBytesWritten) / Float(totalBytesExpectedToWrite)
             
             download.delegate?.download(download, didProgress: progress, totalBytesWritten: totalBytesWritten, totalBytesExpectedToWrite: totalBytesExpectedToWrite)
             
@@ -77,7 +80,15 @@ public class TCBlobDownloadManager {
         }
         
         func URLSession(session: NSURLSession, downloadTask: NSURLSessionDownloadTask, didFinishDownloadingToURL location: NSURL) {
-            println("did finish at URL: \(location)")
+            println("did finish to DL \(downloadTask.originalRequest.URL.absoluteString!) at URL: \(location)")
+            let download = self.downloads[downloadTask.taskIdentifier]!
+            
+            var fileError: NSError?
+            if NSFileManager.defaultManager().moveItemAtURL(location, toURL: download.destinationURL!, error: &fileError) {
+                println("Moved to \(download.destinationURL!.absoluteString)")
+            } else {
+                println(fileError)
+            }
         }
         
         func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError sessionError: NSError?) {
@@ -86,12 +97,15 @@ public class TCBlobDownloadManager {
             
             // Handle possible HTTP errors
             if let response = task.response as? NSHTTPURLResponse {
-                if !validateResponse(response) && error == nil {
-                    error = NSError(domain: kTCBlobDownloadErrorDomain,
+                // NSURLErrorDomain errors are not supposed to be reported by this delegate
+                // according to https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/URLLoadingSystem/NSURLSessionConcepts/NSURLSessionConcepts.html
+                // so let's ignore them as they sometimes appear there for now. (But WTF?)
+                if !validateResponse(response) && (error == nil || error!.domain == NSURLErrorDomain) {
+                    error = NSError(domain: TCBlobDownloadErrorDomain,
                                       code: TCBlobDownloadError.TCBlobDownloadHTTPError.rawValue,
-                                  userInfo: [NSLocalizedDescriptionKey: "Erroneous HTTP status code: \(response.statusCode)",
-                                             NSURLErrorKey: "\(download.downloadTask.originalRequest.URL.absoluteString!)",
-                                             "status": response.statusCode])
+                                  userInfo: [TCBlobDownloadErrorDescriptionKey: "Erroneous HTTP status code: \(response.statusCode)",
+                                             TCBlobDownloadErrorFailingURLKey: task.originalRequest.URL.absoluteString!,
+                                             TCBlobDownloadErrorHTTPStatusKey: response.statusCode])
                 }
             }
             
@@ -105,7 +119,7 @@ public class TCBlobDownloadManager {
 
 // MARK: TCBlobDownloadDelegate
 
-public protocol TCBlobDownloadDelegate {
+public protocol TCBlobDownloadDelegate: class {
     func download(download: TCBlobDownload, didProgress progress: Float, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64)
     func download(download: TCBlobDownload, didFinishWithError: NSError?)
 }
