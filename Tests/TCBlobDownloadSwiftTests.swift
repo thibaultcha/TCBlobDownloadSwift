@@ -49,15 +49,19 @@ class TCBlobDownloadManagerTests: XCTestCase {
         XCTAssert(manager === TCBlobDownloadManager.sharedInstance, "sharedInstance is not a singleton")
     }
     
-    func testDowloadFileAtDirectory() {
+    func testDownloadFileAtURLWithDelegate_to_directory() {
         let expectation = self.expectationWithDescription("should download the file at given directory")
+        let expectedResultingURL = NSURL(string: "first_test", relativeToURL: kTestsDirectory)!
+        
         class DownloadHandler: NSObject, TCBlobDownloadDelegate {
             let expectation: XCTestExpectation
             init(expectation: XCTestExpectation) {
                 self.expectation = expectation
             }
             func download(download: TCBlobDownload, didProgress progress: Float, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {}
-            func download(download: TCBlobDownload, didFinishWithError error: NSError?, atLocation location: NSURL) {
+            func download(download: TCBlobDownload, didFinishWithError error: NSError?, atLocation location: NSURL?) {
+                XCTAssertNotNil(location, "Successful download didn't send the location parameter")
+                //XCTAssertEqual(expectedResultingURL.absoluteString!, location?.absoluteString!, "Location parameter doesn't match the expected URL")
                 expectation.fulfill()
             }
         }
@@ -72,7 +76,7 @@ class TCBlobDownloadManagerTests: XCTestCase {
             }
         }
         
-        let exists = NSFileManager.defaultManager().fileExistsAtPath(NSURL(string: "first_test", relativeToURL: kTestsDirectory)!.path!)
+        let exists = NSFileManager.defaultManager().fileExistsAtPath(expectedResultingURL.path!)
         XCTAssertTrue(exists, "File not downloaded at given path")
     }
     
@@ -88,7 +92,7 @@ class TCBlobDownloadManagerTests: XCTestCase {
             func download(download: TCBlobDownload, didProgress progress: Float, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
                 didProgressCalled = true
             }
-            func download(download: TCBlobDownload, didFinishWithError error: NSError?, atLocation location: NSURL) {
+            func download(download: TCBlobDownload, didFinishWithError error: NSError?, atLocation location: NSURL?) {
                 didFinishCalled = true
                 expectation.fulfill()
             }
@@ -121,14 +125,14 @@ class TCBlobDownloadManagerTests: XCTestCase {
                 XCTAssert(10 == totalBytesExpectedToWrite)
                 XCTAssert(1.0 == progress)
             }
-            func download(download: TCBlobDownload, didFinishWithError error: NSError?, atLocation location: NSURL) {
+            func download(download: TCBlobDownload, didFinishWithError error: NSError?, atLocation location: NSURL?) {
                 expectation.fulfill()
             }
         }
         
         let downloadHandler = DownloadHandler(expectation: expectation)
         
-        TCBlobDownloadManager.sharedInstance.downloadFileAtURL(Httpbin.fixtureWithBytes(bytes: 10), toDirectory: kTestsDirectory, withName: nil, andDelegate: downloadHandler)
+        var lol = TCBlobDownloadManager.sharedInstance.downloadFileAtURL(Httpbin.fixtureWithBytes(bytes: 10), toDirectory: kTestsDirectory, withName: nil, andDelegate: downloadHandler)
         
         self.waitForExpectationsWithTimeout(kDefaultTimeout) { (error) in
             if error != nil {
@@ -147,7 +151,7 @@ class TCBlobDownloadManagerTests: XCTestCase {
             func download(download: TCBlobDownload, didProgress progress: Float, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
                 // assert progress is -1
             }
-            func download(download: TCBlobDownload, didFinishWithError error: NSError?, atLocation location: NSURL) {
+            func download(download: TCBlobDownload, didFinishWithError error: NSError?, atLocation location: NSURL?) {
                 XCTAssertNotNil(error, "No error returned for an erroneous HTTP status code")
                 XCTAssertNotNil(error?.userInfo?[TCBlobDownloadErrorDescriptionKey], "Error userInfo is missing localized description")
                 XCTAssert(error?.userInfo?[TCBlobDownloadErrorHTTPStatusKey] as? NSValue == 404, "Error userInfo is missing status")

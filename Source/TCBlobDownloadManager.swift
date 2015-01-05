@@ -83,17 +83,18 @@ public class TCBlobDownloadManager {
             println("did finish to DL \(downloadTask.originalRequest.URL) at URL: \(location)")
             let download = self.downloads[downloadTask.taskIdentifier]!
             var fileError: NSError?
+            var resultingURL: NSURL?
             
-            if NSFileManager.defaultManager().replaceItemAtURL(download.destinationURL, withItemAtURL: location, backupItemName: nil, options: nil, resultingItemURL: nil, error: &fileError) {
-                println("Moved to \(download.destinationURL)")
+            if NSFileManager.defaultManager().replaceItemAtURL(download.destinationURL, withItemAtURL: location, backupItemName: nil, options: nil, resultingItemURL: &resultingURL, error: &fileError) {
+                download.resultingURL = resultingURL
             } else {
-                println(fileError)
+                download.error = fileError
             }
         }
         
         func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError sessionError: NSError?) {
             let download = self.downloads[task.taskIdentifier]!
-            var error: NSError? = sessionError
+            var error: NSError? = sessionError ?? download.error
             
             // Handle possible HTTP errors
             if let response = task.response as? NSHTTPURLResponse {
@@ -109,7 +110,7 @@ public class TCBlobDownloadManager {
                 }
             }
             
-            download.delegate?.download(download, didFinishWithError: error, atLocation: download.destinationURL)
+            download.delegate?.download(download, didFinishWithError: error, atLocation: download.resultingURL)
             
             // Remove reference to the download
             self.downloads.removeValueForKey(task.taskIdentifier)
@@ -121,5 +122,5 @@ public class TCBlobDownloadManager {
 
 public protocol TCBlobDownloadDelegate: class {
     func download(download: TCBlobDownload, didProgress progress: Float, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64)
-    func download(download: TCBlobDownload, didFinishWithError: NSError?, atLocation location: NSURL)
+    func download(download: TCBlobDownload, didFinishWithError: NSError?, atLocation location: NSURL?)
 }

@@ -21,8 +21,14 @@ public class TCBlobDownload {
     // An optional destination path for the file. If nil, the file will be downloaded in the current user temporary directory
     let directory: NSURL?
     
+    // If the downloaded file couldn't be moved to its final destination, will contain the error
+    var error: NSError?
+    
+    // If the final copy of the file was successful, will contain the URL to the final file
+    var resultingURL: NSURL?
+    
     // A computed destinationURL depending on the destinationPath, fileName, and suggestedFileName from the underlying NSURLResponse
-    var destinationURL: NSURL {
+    public var destinationURL: NSURL {
         let destinationPath = self.directory ?? NSURL(fileURLWithPath: NSTemporaryDirectory())
         let fileName = self.fileName ?? self.downloadTask.response?.suggestedFilename
         
