@@ -45,9 +45,9 @@ public class TCBlobDownloadManager {
     /**
         Start a download at given URL with an optional delegate
     */
-    public func downloadFileAtURL(url: NSURL, toDirectory directory: NSString?, withName name: NSString?, andDelegate delegate: TCBlobDownloadDelegate?) -> TCBlobDownload {
+    public func downloadFileAtURL(url: NSURL, toDirectory directory: NSURL?, withName name: NSString?, andDelegate delegate: TCBlobDownloadDelegate?) -> TCBlobDownload {
         let downloadTask = self.session.downloadTaskWithURL(url)
-        let download = TCBlobDownload(downloadTask: downloadTask, fileName: name, destinationPath: directory, delegate: delegate)
+        let download = TCBlobDownload(downloadTask: downloadTask, toDirectory: directory, fileName: name, delegate: delegate)
 
         self.delegate.downloads[download.downloadTask.taskIdentifier] = download
         
@@ -80,12 +80,12 @@ public class TCBlobDownloadManager {
         }
         
         func URLSession(session: NSURLSession, downloadTask: NSURLSessionDownloadTask, didFinishDownloadingToURL location: NSURL) {
-            println("did finish to DL \(downloadTask.originalRequest.URL.absoluteString!) at URL: \(location)")
+            println("did finish to DL \(downloadTask.originalRequest.URL) at URL: \(location)")
             let download = self.downloads[downloadTask.taskIdentifier]!
-            
             var fileError: NSError?
-            if NSFileManager.defaultManager().moveItemAtURL(location, toURL: download.destinationURL!, error: &fileError) {
-                println("Moved to \(download.destinationURL!.absoluteString)")
+            
+            if NSFileManager.defaultManager().replaceItemAtURL(download.destinationURL, withItemAtURL: location, backupItemName: nil, options: nil, resultingItemURL: nil, error: &fileError) {
+                println("Moved to \(download.destinationURL)")
             } else {
                 println(fileError)
             }
@@ -104,12 +104,12 @@ public class TCBlobDownloadManager {
                     error = NSError(domain: TCBlobDownloadErrorDomain,
                                       code: TCBlobDownloadError.TCBlobDownloadHTTPError.rawValue,
                                   userInfo: [TCBlobDownloadErrorDescriptionKey: "Erroneous HTTP status code: \(response.statusCode)",
-                                             TCBlobDownloadErrorFailingURLKey: task.originalRequest.URL.absoluteString!,
+                                             TCBlobDownloadErrorFailingURLKey: task.originalRequest.URL,
                                              TCBlobDownloadErrorHTTPStatusKey: response.statusCode])
                 }
             }
             
-            download.delegate?.download(download, didFinishWithError: error)
+            download.delegate?.download(download, didFinishWithError: error, atLocation: download.destinationURL)
             
             // Remove reference to the download
             self.downloads.removeValueForKey(task.taskIdentifier)
@@ -121,5 +121,5 @@ public class TCBlobDownloadManager {
 
 public protocol TCBlobDownloadDelegate: class {
     func download(download: TCBlobDownload, didProgress progress: Float, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64)
-    func download(download: TCBlobDownload, didFinishWithError: NSError?)
+    func download(download: TCBlobDownload, didFinishWithError: NSError?, atLocation location: NSURL)
 }
