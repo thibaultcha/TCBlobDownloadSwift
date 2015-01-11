@@ -24,6 +24,9 @@ public class TCBlobDownloadManager {
     // Instance of the underlying class implementing NSURLSessionDownloadDelegate
     private let delegate: DownloadDelegate
     
+    // If true, downloads will start immediatly after being created
+    public var startImmediatly = true
+
     /**
         A shared instance of TCBlobDownloadManager
     */
@@ -35,7 +38,7 @@ public class TCBlobDownloadManager {
         return Singleton.instance
     }
     
-    init() {
+    public init() {
         // TODO: replace with backgroundSession. Gives an unkown error for now.
         let config = NSURLSessionConfiguration.defaultSessionConfiguration()
         self.delegate = DownloadDelegate()
@@ -51,7 +54,9 @@ public class TCBlobDownloadManager {
 
         self.delegate.downloads[download.downloadTask.taskIdentifier] = download
         
-        downloadTask.resume()
+        if self.startImmediatly {
+            downloadTask.resume()
+        }
         
         return download
     }

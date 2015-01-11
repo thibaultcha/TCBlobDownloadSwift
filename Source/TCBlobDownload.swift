@@ -10,22 +10,22 @@ import Foundation
 
 public class TCBlobDownload {
     // The underlaying session download task
-    let downloadTask: NSURLSessionDownloadTask
+    public let downloadTask: NSURLSessionDownloadTask
 
     // An optional delegate to get notified of events
     weak var delegate: TCBlobDownloadDelegate?
     
     // An optional file name. If nil, a suggested file name is used
-    let fileName: String?
+    private let fileName: String?
     
     // An optional destination path for the file. If nil, the file will be downloaded in the current user temporary directory
-    let directory: NSURL?
+    private let directory: NSURL?
     
     // If the downloaded file couldn't be moved to its final destination, will contain the error
     var error: NSError?
     
     // If the final copy of the file was successful, will contain the URL to the final file
-    var resultingURL: NSURL?
+    public var resultingURL: NSURL?
     
     // A computed destinationURL depending on the destinationPath, fileName, and suggestedFileName from the underlying NSURLResponse
     public var destinationURL: NSURL {
@@ -42,8 +42,20 @@ public class TCBlobDownload {
         self.fileName = fileName
     }
     
+    public func cancel() {
+        self.downloadTask.cancel()
+    }
+
+    public func suspend() {
+        self.downloadTask.suspend()
+    }
+
+    public func resume() {
+        self.downloadTask.resume()
+    }
+
+    // TODO: cancelWithResumeData
     // TODO: closures
-    // TODO: cancel, resume, suspend, state
     // TODO: remaining time
 }
 

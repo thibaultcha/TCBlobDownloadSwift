@@ -132,7 +132,7 @@ class TCBlobDownloadManagerTests: XCTestCase {
         
         let downloadHandler = DownloadHandler(expectation: expectation)
         
-        var lol = TCBlobDownloadManager.sharedInstance.downloadFileAtURL(Httpbin.fixtureWithBytes(bytes: 10), toDirectory: kTestsDirectory, withName: nil, andDelegate: downloadHandler)
+        TCBlobDownloadManager.sharedInstance.downloadFileAtURL(Httpbin.fixtureWithBytes(bytes: 10), toDirectory: kTestsDirectory, withName: nil, andDelegate: downloadHandler)
         
         self.waitForExpectationsWithTimeout(kDefaultTimeout) { (error) in
             if error != nil {
@@ -175,5 +175,24 @@ class TCBlobDownloadManagerTests: XCTestCase {
                 println(error)
             }
         }
+    }
+
+    func testDownloadFileAtURLWithDelegate_return_download_instance() {
+        let download: TCBlobDownload = TCBlobDownloadManager.sharedInstance.downloadFileAtURL(Httpbin.fixtureWithBytes(), toDirectory: kTestsDirectory, withName: nil, andDelegate: nil)
+
+        XCTAssertNotNil(download, "downloadFileAtURL: did not return a download instance")
+    }
+
+    func testDownloadFileAtURLWithDelegate_start_immediatly() {
+        // Immediate running
+        let immediateDownload = TCBlobDownloadManager.sharedInstance.downloadFileAtURL(Httpbin.fixtureWithBytes(), toDirectory: kTestsDirectory, withName: nil, andDelegate: nil)
+        XCTAssert(immediateDownload.downloadTask.state == NSURLSessionTaskState.Running)
+
+        // Non immediate running
+        let manager = TCBlobDownloadManager()
+        manager.startImmediatly = false
+
+        let download = manager.downloadFileAtURL(Httpbin.fixtureWithBytes(), toDirectory: kTestsDirectory, withName: nil, andDelegate: nil)
+        XCTAssert(download.downloadTask.state == NSURLSessionTaskState.Suspended)
     }
 }
