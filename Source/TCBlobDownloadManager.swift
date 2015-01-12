@@ -10,8 +10,8 @@ import Foundation
 
 public let TCBlobDownloadErrorDomain = "com.tcblobdownloadswift.error"
 public let TCBlobDownloadErrorDescriptionKey = "TCBlobDownloadErrorDescriptionKey"
-public let TCBlobDownloadErrorFailingURLKey = "TCBlobDownloadFailingURLKey"
 public let TCBlobDownloadErrorHTTPStatusKey = "TCBlobDownloadErrorHTTPStatusKey"
+public let TCBlobDownloadErrorFailingURLKey = "TCBlobDownloadFailingURLKey"
 
 public enum TCBlobDownloadError: Int {
     case TCBlobDownloadHTTPError = 1
@@ -59,6 +59,19 @@ public class TCBlobDownloadManager {
         }
         
         return download
+    }
+
+    public func currentDownloadsFilteredByState(state: NSURLSessionTaskState?) -> [TCBlobDownload] {
+        var downloads = [TCBlobDownload]()
+
+        // Should be functional as soon as Dictionary supports reduce/filter
+        for download in self.delegate.downloads.values {
+            if state == nil || download.downloadTask.state == state? {
+                downloads.append(download)
+            }
+        }
+
+        return downloads
     }
     
     class DownloadDelegate: NSObject, NSURLSessionDownloadDelegate {
