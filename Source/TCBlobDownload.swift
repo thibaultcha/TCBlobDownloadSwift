@@ -54,15 +54,10 @@ public class TCBlobDownload {
         self.downloadTask.resume()
     }
 
-    /*
-    public func cancelWithResumeData() {
-        self.downloadTask.cancelByProducingResumeData({ (data) -> Void in
-
-        })
+    public func cancelWithResumeData(completionHandler: (NSData!) -> Void) {
+        self.downloadTask.cancelByProducingResumeData(completionHandler)
     }
-    */
 
-    // TODO: cancelWithResumeData
     // TODO: closures
     // TODO: remaining time
 }

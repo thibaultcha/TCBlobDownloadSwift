@@ -44,21 +44,39 @@ public class TCBlobDownloadManager {
         self.delegate = DownloadDelegate()
         self.session = NSURLSession(configuration: config, delegate: self.delegate, delegateQueue: nil)
     }
-    
+
     /**
-        Start a download at given URL with an optional delegate
+        Base method to start a download, called by other download methods.
+        Not public.
+    */
+    func downloadWithDownload(download: TCBlobDownload) -> TCBlobDownload {
+        self.delegate.downloads[download.downloadTask.taskIdentifier] = download
+
+        if self.startImmediatly {
+            download.downloadTask.resume()
+        }
+
+        return download
+    }
+
+    /**
+        Start a download at given URL
     */
     public func downloadFileAtURL(url: NSURL, toDirectory directory: NSURL?, withName name: NSString?, andDelegate delegate: TCBlobDownloadDelegate?) -> TCBlobDownload {
         let downloadTask = self.session.downloadTaskWithURL(url)
         let download = TCBlobDownload(downloadTask: downloadTask, toDirectory: directory, fileName: name, delegate: delegate)
 
-        self.delegate.downloads[download.downloadTask.taskIdentifier] = download
-        
-        if self.startImmediatly {
-            downloadTask.resume()
-        }
-        
-        return download
+        return self.downloadWithDownload(download)
+    }
+
+    /**
+        Start a download with given resumeData
+    */
+    public func downloadFileWithResumeData(resumeData: NSData, toDirectory directory: NSURL?, withName name: NSString?, andDelegate delegate: TCBlobDownloadDelegate?) -> TCBlobDownload {
+        let downloadTask = self.session.downloadTaskWithResumeData(resumeData)
+        let download = TCBlobDownload(downloadTask: downloadTask, toDirectory: directory, fileName: name, delegate: delegate)
+
+        return self.downloadWithDownload(download)
     }
 
     public func currentDownloadsFilteredByState(state: NSURLSessionTaskState?) -> [TCBlobDownload] {
@@ -113,7 +131,7 @@ public class TCBlobDownloadManager {
         func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError sessionError: NSError?) {
             let download = self.downloads[task.taskIdentifier]!
             var error: NSError? = sessionError ?? download.error
-            
+
             // Handle possible HTTP errors
             if let response = task.response as? NSHTTPURLResponse {
                 // NSURLErrorDomain errors are not supposed to be reported by this delegate

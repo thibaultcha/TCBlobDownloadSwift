@@ -12,7 +12,7 @@ import TCBlobDownloadSwift
 let kTestsDirectory = NSURL(string: "com.tcblobdownload.tests/", relativeToURL: NSURL(fileURLWithPath: NSTemporaryDirectory()))!
 let kDefaultTimeout: NSTimeInterval = 2.0
 let kHttpbinURL = NSURL(string: "http://httpbin.org")
-let kValidURL = NSURL(string: "https://github.com/thibaultCha/TCBlobDownload/archive/master.zip")
+let kValidURL = NSURL(string: "https://github.com/thibaultCha/TCBlobDownload/archive/master.zip")!
 let kInvalidURL = NSURL(string: "hello world")
 
 class Httpbin {
@@ -42,7 +42,7 @@ class TCBlobDownloadManagerTests: XCTestCase {
         
         super.tearDown()
     }
-    
+
     func testSharedInstance() {
         let manager: TCBlobDownloadManager = TCBlobDownloadManager.sharedInstance
         XCTAssertNotNil(manager, "sharedInstance is nil.")
