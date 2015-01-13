@@ -11,7 +11,7 @@ import TCBlobDownloadSwift
 
 let kTestsDirectory = NSURL(string: "com.tcblobdownload.tests/", relativeToURL: NSURL(fileURLWithPath: NSTemporaryDirectory()))!
 let kDefaultTimeout: NSTimeInterval = 2.0
-let kHttpbinURL = NSURL(string: "http://httpbin.org")
+let kHttpbinURL = NSURL(string: "http://httpbin.org")!
 let kValidURL = NSURL(string: "https://github.com/thibaultCha/TCBlobDownload/archive/master.zip")!
 let kInvalidURL = NSURL(string: "hello world")
 
@@ -61,6 +61,7 @@ class TCBlobDownloadManagerTests: XCTestCase {
             func download(download: TCBlobDownload, didProgress progress: Float, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {}
             func download(download: TCBlobDownload, didFinishWithError error: NSError?, atLocation location: NSURL?) {
                 XCTAssertNotNil(location, "Successful download didn't send the location parameter")
+                // Xcode error
                 //XCTAssertEqual(expectedResultingURL.absoluteString!, location?.absoluteString!, "Location parameter doesn't match the expected URL")
                 expectation.fulfill()
             }
