@@ -150,6 +150,8 @@ public class TCBlobDownloadManager {
             
             // Remove reference to the download
             self.downloads.removeValueForKey(task.taskIdentifier)
+
+            println("did finish at \(download.resultingURL) with error \(error)")
         }
     }
 }

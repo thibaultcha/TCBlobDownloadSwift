@@ -8,22 +8,24 @@
 
 /* Begin PBXBuildFile section */
 		C3A10A831A64FA74005EAE92 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A10A821A64FA74005EAE92 /* AppDelegate.swift */; };
-		C3A10A851A64FA74005EAE92 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A10A841A64FA74005EAE92 /* ViewController.swift */; };
+		C3A10A851A64FA74005EAE92 /* DownloadsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A10A841A64FA74005EAE92 /* DownloadsViewController.swift */; };
 		C3A10A881A64FA74005EAE92 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C3A10A861A64FA74005EAE92 /* Main.storyboard */; };
 		C3A10A8A1A64FA74005EAE92 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C3A10A891A64FA74005EAE92 /* Images.xcassets */; };
 		C3A10A8D1A64FA74005EAE92 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3A10A8B1A64FA74005EAE92 /* LaunchScreen.xib */; };
 		C3A10AA31A64FB1C005EAE92 /* TCBlobDownloadSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3A10AA21A64FB1C005EAE92 /* TCBlobDownloadSwift.framework */; };
+		C3A10AA71A6632B2005EAE92 /* AddDownloadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A10AA61A6632B2005EAE92 /* AddDownloadViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		C3A10A7D1A64FA74005EAE92 /* iOS Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "iOS Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C3A10A811A64FA74005EAE92 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C3A10A821A64FA74005EAE92 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		C3A10A841A64FA74005EAE92 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		C3A10A841A64FA74005EAE92 /* DownloadsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadsViewController.swift; sourceTree = "<group>"; };
 		C3A10A871A64FA74005EAE92 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		C3A10A891A64FA74005EAE92 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		C3A10A8C1A64FA74005EAE92 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		C3A10AA21A64FB1C005EAE92 /* TCBlobDownloadSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TCBlobDownloadSwift.framework; path = "build/Debug-iphoneos/TCBlobDownloadSwift.framework"; sourceTree = "<group>"; };
+		C3A10AA61A6632B2005EAE92 /* AddDownloadViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddDownloadViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,7 +61,8 @@
 			isa = PBXGroup;
 			children = (
 				C3A10A821A64FA74005EAE92 /* AppDelegate.swift */,
-				C3A10A841A64FA74005EAE92 /* ViewController.swift */,
+				C3A10A841A64FA74005EAE92 /* DownloadsViewController.swift */,
+				C3A10AA61A6632B2005EAE92 /* AddDownloadViewController.swift */,
 				C3A10A861A64FA74005EAE92 /* Main.storyboard */,
 				C3A10A891A64FA74005EAE92 /* Images.xcassets */,
 				C3A10A8B1A64FA74005EAE92 /* LaunchScreen.xib */,
@@ -155,8 +158,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C3A10A851A64FA74005EAE92 /* ViewController.swift in Sources */,
+				C3A10A851A64FA74005EAE92 /* DownloadsViewController.swift in Sources */,
 				C3A10A831A64FA74005EAE92 /* AppDelegate.swift in Sources */,
+				C3A10AA71A6632B2005EAE92 /* AddDownloadViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
