@@ -111,12 +111,9 @@ public class TCBlobDownloadManager {
             let progress = totalBytesExpectedToWrite == NSURLSessionTransferSizeUnknown ? -1 : Float(totalBytesWritten) / Float(totalBytesExpectedToWrite)
             
             download.delegate?.download(download, didProgress: progress, totalBytesWritten: totalBytesWritten, totalBytesExpectedToWrite: totalBytesExpectedToWrite)
-            
-            println("Downloaded \(totalBytesWritten)/\(totalBytesExpectedToWrite) bytes. Progress: \(progress)")
         }
         
         func URLSession(session: NSURLSession, downloadTask: NSURLSessionDownloadTask, didFinishDownloadingToURL location: NSURL) {
-            println("did finish to DL \(downloadTask.originalRequest.URL) at URL: \(location)")
             let download = self.downloads[downloadTask.taskIdentifier]!
             var fileError: NSError?
             var resultingURL: NSURL?
@@ -145,13 +142,11 @@ public class TCBlobDownloadManager {
                                              TCBlobDownloadErrorHTTPStatusKey: response.statusCode])
                 }
             }
-            
-            download.delegate?.download(download, didFinishWithError: error, atLocation: download.resultingURL)
-            
+
             // Remove reference to the download
             self.downloads.removeValueForKey(task.taskIdentifier)
 
-            println("did finish at \(download.resultingURL) with error \(error)")
+            download.delegate?.download(download, didFinishWithError: error, atLocation: download.resultingURL)
         }
     }
 }

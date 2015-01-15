@@ -14,6 +14,8 @@
 		C3A10A8D1A64FA74005EAE92 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3A10A8B1A64FA74005EAE92 /* LaunchScreen.xib */; };
 		C3A10AA31A64FB1C005EAE92 /* TCBlobDownloadSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3A10AA21A64FB1C005EAE92 /* TCBlobDownloadSwift.framework */; };
 		C3A10AA71A6632B2005EAE92 /* AddDownloadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A10AA61A6632B2005EAE92 /* AddDownloadViewController.swift */; };
+		C3DF78B71A67A871000B558E /* DownloadTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DF78B61A67A871000B558E /* DownloadTableViewCell.swift */; };
+		C3DF78B91A67A8DA000B558E /* DownloadTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3DF78B81A67A8DA000B558E /* DownloadTableViewCell.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +28,8 @@
 		C3A10A8C1A64FA74005EAE92 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		C3A10AA21A64FB1C005EAE92 /* TCBlobDownloadSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TCBlobDownloadSwift.framework; path = "build/Debug-iphoneos/TCBlobDownloadSwift.framework"; sourceTree = "<group>"; };
 		C3A10AA61A6632B2005EAE92 /* AddDownloadViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddDownloadViewController.swift; sourceTree = "<group>"; };
+		C3DF78B61A67A871000B558E /* DownloadTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadTableViewCell.swift; sourceTree = "<group>"; };
+		C3DF78B81A67A8DA000B558E /* DownloadTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DownloadTableViewCell.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +67,7 @@
 				C3A10A821A64FA74005EAE92 /* AppDelegate.swift */,
 				C3A10A841A64FA74005EAE92 /* DownloadsViewController.swift */,
 				C3A10AA61A6632B2005EAE92 /* AddDownloadViewController.swift */,
+				C3DF78BA1A67A8DF000B558E /* DownloadCell */,
 				C3A10A861A64FA74005EAE92 /* Main.storyboard */,
 				C3A10A891A64FA74005EAE92 /* Images.xcassets */,
 				C3A10A8B1A64FA74005EAE92 /* LaunchScreen.xib */,
@@ -86,6 +91,15 @@
 			);
 			name = Frameworks;
 			path = ..;
+			sourceTree = "<group>";
+		};
+		C3DF78BA1A67A8DF000B558E /* DownloadCell */ = {
+			isa = PBXGroup;
+			children = (
+				C3DF78B61A67A871000B558E /* DownloadTableViewCell.swift */,
+				C3DF78B81A67A8DA000B558E /* DownloadTableViewCell.xib */,
+			);
+			name = DownloadCell;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -146,6 +160,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C3A10A881A64FA74005EAE92 /* Main.storyboard in Resources */,
+				C3DF78B91A67A8DA000B558E /* DownloadTableViewCell.xib in Resources */,
 				C3A10A8D1A64FA74005EAE92 /* LaunchScreen.xib in Resources */,
 				C3A10A8A1A64FA74005EAE92 /* Images.xcassets in Resources */,
 			);
@@ -159,6 +174,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C3A10A851A64FA74005EAE92 /* DownloadsViewController.swift in Sources */,
+				C3DF78B71A67A871000B558E /* DownloadTableViewCell.swift in Sources */,
 				C3A10A831A64FA74005EAE92 /* AppDelegate.swift in Sources */,
 				C3A10AA71A6632B2005EAE92 /* AddDownloadViewController.swift in Sources */,
 			);

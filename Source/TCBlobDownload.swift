@@ -15,8 +15,8 @@ public class TCBlobDownload {
     // An optional delegate to get notified of events
     weak var delegate: TCBlobDownloadDelegate?
     
-    // An optional file name. If nil, a suggested file name is used
-    private let fileName: String?
+    // An optional file name set by the user.
+    private let preferedFileName: String?
     
     // An optional destination path for the file. If nil, the file will be downloaded in the current user temporary directory
     private let directory: NSURL?
@@ -26,20 +26,24 @@ public class TCBlobDownload {
     
     // If the final copy of the file was successful, will contain the URL to the final file
     public var resultingURL: NSURL?
-    
+
+    // A computed property to get the filename of the downloaded file
+    public var fileName: String? {
+        return self.preferedFileName ?? self.downloadTask.response?.suggestedFilename
+    }
+
     // A computed destinationURL depending on the destinationPath, fileName, and suggestedFileName from the underlying NSURLResponse
     public var destinationURL: NSURL {
         let destinationPath = self.directory ?? NSURL(fileURLWithPath: NSTemporaryDirectory())
-        let fileName = self.fileName ?? self.downloadTask.response?.suggestedFilename
-        
-        return NSURL(string: fileName!, relativeToURL: destinationPath!)!.URLByStandardizingPath!
+
+        return NSURL(string: self.fileName!, relativeToURL: destinationPath!)!.URLByStandardizingPath!
     }
     
     init(downloadTask: NSURLSessionDownloadTask, toDirectory directory: NSURL?, fileName: String?, delegate: TCBlobDownloadDelegate?) {
         self.downloadTask = downloadTask
         self.delegate = delegate
         self.directory = directory
-        self.fileName = fileName
+        self.preferedFileName = fileName
     }
     
     public func cancel() {

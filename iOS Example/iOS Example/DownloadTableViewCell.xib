@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6254" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="70" id="eTT-SU-yr9" customClass="DownloadTableViewCell" customModule="iOS_Example" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="70"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="eTT-SU-yr9" id="eUm-K4-O1i">
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="labelDownload" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ax8-rY-AUL">
+                        <rect key="frame" x="16" y="35" width="289" height="12"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="labelFileName" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NcL-8I-2fG">
+                        <rect key="frame" x="16" y="9" width="289" height="20"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="Ax8-rY-AUL" firstAttribute="leading" secondItem="eUm-K4-O1i" secondAttribute="leadingMargin" constant="10" id="7Uv-pA-Drh"/>
+                    <constraint firstItem="Ax8-rY-AUL" firstAttribute="centerX" secondItem="eUm-K4-O1i" secondAttribute="centerX" id="86R-qD-uwu"/>
+                    <constraint firstItem="NcL-8I-2fG" firstAttribute="trailing" secondItem="Ax8-rY-AUL" secondAttribute="trailing" id="DxY-Ko-e5M"/>
+                    <constraint firstItem="Ax8-rY-AUL" firstAttribute="centerY" secondItem="eUm-K4-O1i" secondAttribute="centerY" constant="-16" id="KkU-Hy-hKu"/>
+                    <constraint firstItem="NcL-8I-2fG" firstAttribute="top" secondItem="eUm-K4-O1i" secondAttribute="topMargin" constant="1" id="MYa-7R-jcV"/>
+                    <constraint firstItem="Ax8-rY-AUL" firstAttribute="top" secondItem="NcL-8I-2fG" secondAttribute="bottom" constant="5" id="eZY-pZ-JpG"/>
+                    <constraint firstItem="Ax8-rY-AUL" firstAttribute="leading" secondItem="eUm-K4-O1i" secondAttribute="leadingMargin" constant="8" id="t7D-fc-aKB"/>
+                    <constraint firstItem="Ax8-rY-AUL" firstAttribute="top" secondItem="eUm-K4-O1i" secondAttribute="topMargin" constant="26" id="yd8-9E-7Ox"/>
+                    <constraint firstItem="NcL-8I-2fG" firstAttribute="leading" secondItem="Ax8-rY-AUL" secondAttribute="leading" id="z9V-BP-Kni"/>
+                </constraints>
+                <variation key="default">
+                    <mask key="constraints">
+                        <exclude reference="7Uv-pA-Drh"/>
+                        <exclude reference="KkU-Hy-hKu"/>
+                    </mask>
+                </variation>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="labelDownload" destination="Ax8-rY-AUL" id="V29-Kh-1vF"/>
+                <outlet property="labelFileName" destination="NcL-8I-2fG" id="b0l-A9-qHW"/>
+            </connections>
+            <point key="canvasLocation" x="366" y="411"/>
+        </tableViewCell>
+    </objects>
+</document>
