@@ -8,8 +8,8 @@ Simplified file downloads for iOS 7+ with `NSURLSession` in Swift.
 
 ### Features
 
-> Incoming
+> Incoming (a bunch already)
 
 ### Roadmap
 
-> Incoming
+> Incoming (exciting things)
