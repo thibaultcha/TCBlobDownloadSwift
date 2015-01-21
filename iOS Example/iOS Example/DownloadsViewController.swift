@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 Thibault Charbonnier. All rights reserved.
 //
 
+import Foundation
 import UIKit
 import TCBlobDownloadSwift
 
@@ -57,8 +58,19 @@ class DownloadsViewController: UIViewController, UITableViewDataSource, UITableV
         var download: TCBlobDownload? = self.downloads[indexPath.row]
 
         if let fileName = download?.fileName {
-            cell.labelDownload.text = fileName
+            cell.labelFileName.text = fileName
+        } else {
+            cell.labelFileName.text = ""
         }
+
+        if let downloadTask = download?.downloadTask {
+            if downloadTask.state == NSURLSessionTaskState.Running {
+                cell.buttonPause.titleLabel?.text = "Pause"
+            } else if downloadTask.state == NSURLSessionTaskState.Suspended {
+                cell.buttonPause.titleLabel?.text = "Resume"
+            }
+        }
+
         cell.labelDownload.text = download?.downloadTask.originalRequest.URL.absoluteString
 
         return cell
@@ -73,16 +85,14 @@ class DownloadsViewController: UIViewController, UITableViewDataSource, UITableV
     // MARK: TCBlobDownloadDelegate
 
     func download(download: TCBlobDownload, didProgress progress: Float, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
-        println("Downloaded \(totalBytesWritten)/\(totalBytesExpectedToWrite) bytes. Progress: \(progress)")
         let downloads: NSArray = self.downloads
         let index = downloads.indexOfObject(download)
 
         let updateIndexPath = NSIndexPath(forRow: index, inSection: 0)
-        self.downloadsTableView.reloadRowsAtIndexPaths([updateIndexPath], withRowAnimation: UITableViewRowAnimation.None)
+        self.downloadsTableView.reloadRowsAtIndexPaths([updateIndexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
     }
 
     func download(download: TCBlobDownload, didFinishWithError: NSError?, atLocation location: NSURL?) {
-        println("did finish to DL \(download.downloadTask.originalRequest.URL) at URL: \(location)")
         let downloads: NSArray = self.downloads
         let index = downloads.indexOfObject(download)
         self.downloads.removeAtIndex(index)

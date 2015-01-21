@@ -14,4 +14,6 @@ class DownloadTableViewCell : UITableViewCell {
 
     @IBOutlet weak var labelFileName: UILabel!
     
+    @IBOutlet weak var buttonPause: UIButton!
+
 }

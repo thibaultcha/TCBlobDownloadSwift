@@ -141,7 +141,35 @@ class TCBlobDownloadManagerTests: XCTestCase {
             }
         }
     }
-    
+
+    func testDownloadFileAtURLWithDelegate_methods_on_main_thread() {
+        let expectation = self.expectationWithDescription("should call the delegate methods on the main thread")
+        class DownloadHandler: NSObject, TCBlobDownloadDelegate {
+            let expectation: XCTestExpectation
+            var didProgressCalled = false
+            init(expectation: XCTestExpectation) {
+                self.expectation = expectation
+            }
+            func download(download: TCBlobDownload, didProgress progress: Float, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
+                XCTAssert(NSThread.isMainThread(), "download:didProgress: not called on main thread")
+            }
+            func download(download: TCBlobDownload, didFinishWithError error: NSError?, atLocation location: NSURL?) {
+                XCTAssert(NSThread.isMainThread(), "didFinishWithError: not called on main thread")
+                expectation.fulfill()
+            }
+        }
+
+        let downloadHandler = DownloadHandler(expectation: expectation)
+
+        TCBlobDownloadManager.sharedInstance.downloadFileAtURL(Httpbin.fixtureWithBytes(bytes: 10), toDirectory: kTestsDirectory, withName: nil, andDelegate: downloadHandler)
+
+        self.waitForExpectationsWithTimeout(kDefaultTimeout) { (error) in
+            if error != nil {
+                println(error)
+            }
+        }
+    }
+
     func testDownloadFileAtURLWithDelegate_invalid_response() {
         let expectation = self.expectationWithDescription("should report any HTTP error")
         class DownloadHandler: NSObject, TCBlobDownloadDelegate {
@@ -149,9 +177,7 @@ class TCBlobDownloadManagerTests: XCTestCase {
             init(expectation: XCTestExpectation) {
                 self.expectation = expectation
             }
-            func download(download: TCBlobDownload, didProgress progress: Float, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
-                // assert progress is -1
-            }
+            func download(download: TCBlobDownload, didProgress progress: Float, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {}
             func download(download: TCBlobDownload, didFinishWithError error: NSError?, atLocation location: NSURL?) {
                 XCTAssertNotNil(error, "No error returned for an erroneous HTTP status code")
                 XCTAssertNotNil(error?.userInfo?[TCBlobDownloadErrorDescriptionKey], "Error userInfo is missing localized description")

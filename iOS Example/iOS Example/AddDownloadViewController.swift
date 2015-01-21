@@ -33,4 +33,5 @@ class AddDownloadViewController: UIViewController {
 
         self.dismissViewControllerAnimated(true, completion: nil)
     }
+    
 }
