@@ -2,6 +2,8 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6254" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
+        <capability name="Alignment constraints to the first baseline" minToolsVersion="6.0"/>
+        <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <objects>
@@ -13,42 +15,60 @@
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="eTT-SU-yr9" id="eUm-K4-O1i">
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="labelFileName" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NcL-8I-2fG">
-                        <rect key="frame" x="23" y="8" width="223" height="20"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="labelFileName" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NcL-8I-2fG">
+                        <rect key="frame" x="15" y="7" width="223" height="20"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="223" id="LFY-yD-7fw"/>
+                        </constraints>
                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QE4-bU-CEK">
-                        <rect key="frame" x="257" y="19" width="43" height="30"/>
+                        <rect key="frame" x="267" y="2" width="38" height="28"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
                         <state key="normal" title="Pause">
                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                         </state>
                     </button>
+                    <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="SGO-Mu-pba">
+                        <rect key="frame" x="15" y="65" width="290" height="2"/>
+                    </progressView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="labelDownload" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ax8-rY-AUL">
-                        <rect key="frame" x="23" y="50" width="289" height="12"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                        <rect key="frame" x="15" y="46" width="290" height="11"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="9"/>
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                 </subviews>
                 <constraints>
+                    <constraint firstItem="Ax8-rY-AUL" firstAttribute="leading" secondItem="SGO-Mu-pba" secondAttribute="leading" id="2te-GS-aC4"/>
                     <constraint firstItem="Ax8-rY-AUL" firstAttribute="leading" secondItem="eUm-K4-O1i" secondAttribute="leadingMargin" constant="10" id="7Uv-pA-Drh"/>
-                    <constraint firstItem="Ax8-rY-AUL" firstAttribute="centerX" secondItem="eUm-K4-O1i" secondAttribute="centerX" constant="7.5" id="86R-qD-uwu"/>
-                    <constraint firstItem="NcL-8I-2fG" firstAttribute="trailing" secondItem="Ax8-rY-AUL" secondAttribute="trailing" constant="-66" id="DxY-Ko-e5M"/>
+                    <constraint firstItem="NcL-8I-2fG" firstAttribute="baseline" secondItem="QE4-bU-CEK" secondAttribute="firstBaseline" id="7yK-JX-mxb"/>
+                    <constraint firstItem="Ax8-rY-AUL" firstAttribute="centerX" secondItem="eUm-K4-O1i" secondAttribute="centerX" constant="8" id="86R-qD-uwu"/>
                     <constraint firstItem="Ax8-rY-AUL" firstAttribute="centerY" secondItem="eUm-K4-O1i" secondAttribute="centerY" constant="-16" id="KkU-Hy-hKu"/>
-                    <constraint firstItem="NcL-8I-2fG" firstAttribute="top" secondItem="eUm-K4-O1i" secondAttribute="topMargin" id="MYa-7R-jcV"/>
-                    <constraint firstItem="Ax8-rY-AUL" firstAttribute="top" secondItem="NcL-8I-2fG" secondAttribute="bottom" constant="22" id="eZY-pZ-JpG"/>
-                    <constraint firstItem="Ax8-rY-AUL" firstAttribute="leading" secondItem="eUm-K4-O1i" secondAttribute="leadingMargin" constant="15" id="t7D-fc-aKB"/>
-                    <constraint firstItem="QE4-bU-CEK" firstAttribute="top" secondItem="eUm-K4-O1i" secondAttribute="topMargin" constant="11" id="tRT-72-iTD"/>
-                    <constraint firstItem="Ax8-rY-AUL" firstAttribute="top" secondItem="eUm-K4-O1i" secondAttribute="topMargin" constant="42" id="yd8-9E-7Ox"/>
-                    <constraint firstAttribute="trailingMargin" secondItem="QE4-bU-CEK" secondAttribute="trailing" constant="12" id="yyR-hc-LQE"/>
+                    <constraint firstItem="Ax8-rY-AUL" firstAttribute="trailing" secondItem="QE4-bU-CEK" secondAttribute="trailing" id="MxE-WT-7uc"/>
+                    <constraint firstAttribute="trailing" secondItem="SGO-Mu-pba" secondAttribute="trailing" constant="15" id="QVj-6m-seH"/>
+                    <constraint firstItem="SGO-Mu-pba" firstAttribute="top" secondItem="Ax8-rY-AUL" secondAttribute="bottom" constant="8" symbolic="YES" id="UYf-QB-aU1"/>
+                    <constraint firstItem="SGO-Mu-pba" firstAttribute="leading" secondItem="eUm-K4-O1i" secondAttribute="leading" constant="15" id="kF8-2a-zA8"/>
+                    <constraint firstItem="NcL-8I-2fG" firstAttribute="top" secondItem="eUm-K4-O1i" secondAttribute="topMargin" constant="-2" id="lMJ-hj-hzj"/>
+                    <constraint firstItem="Ax8-rY-AUL" firstAttribute="leading" secondItem="NcL-8I-2fG" secondAttribute="leading" id="mrY-FA-kCA"/>
+                    <constraint firstItem="Ax8-rY-AUL" firstAttribute="top" secondItem="QE4-bU-CEK" secondAttribute="bottom" constant="16" id="qtb-D1-NMi"/>
+                    <constraint firstItem="Ax8-rY-AUL" firstAttribute="trailing" secondItem="SGO-Mu-pba" secondAttribute="trailing" id="rwT-RX-CfO"/>
+                    <constraint firstItem="QE4-bU-CEK" firstAttribute="top" secondItem="eUm-K4-O1i" secondAttribute="topMargin" constant="-6" id="tRT-72-iTD"/>
+                    <constraint firstItem="NcL-8I-2fG" firstAttribute="baseline" secondItem="QE4-bU-CEK" secondAttribute="baseline" id="v8a-iA-v7l"/>
+                    <constraint firstItem="Ax8-rY-AUL" firstAttribute="top" secondItem="eUm-K4-O1i" secondAttribute="topMargin" constant="29" id="yd8-9E-7Ox"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="QE4-bU-CEK" secondAttribute="trailing" constant="7" id="yyR-hc-LQE"/>
                     <constraint firstItem="NcL-8I-2fG" firstAttribute="leading" secondItem="Ax8-rY-AUL" secondAttribute="leading" id="z9V-BP-Kni"/>
                 </constraints>
                 <variation key="default">
                     <mask key="constraints">
+                        <exclude reference="z9V-BP-Kni"/>
                         <exclude reference="7Uv-pA-Drh"/>
+                        <exclude reference="86R-qD-uwu"/>
                         <exclude reference="KkU-Hy-hKu"/>
+                        <exclude reference="yd8-9E-7Ox"/>
+                        <exclude reference="yyR-hc-LQE"/>
                     </mask>
                 </variation>
             </tableViewCellContentView>
@@ -56,8 +76,9 @@
                 <outlet property="buttonPause" destination="QE4-bU-CEK" id="4en-kG-2H1"/>
                 <outlet property="labelDownload" destination="Ax8-rY-AUL" id="V29-Kh-1vF"/>
                 <outlet property="labelFileName" destination="NcL-8I-2fG" id="b0l-A9-qHW"/>
+                <outlet property="progressView" destination="SGO-Mu-pba" id="C0l-s7-0Dl"/>
             </connections>
-            <point key="canvasLocation" x="366" y="411"/>
+            <point key="canvasLocation" x="366" y="409"/>
         </tableViewCell>
     </objects>
 </document>

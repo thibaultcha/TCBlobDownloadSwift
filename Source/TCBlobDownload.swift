@@ -14,7 +14,7 @@ public class TCBlobDownload {
 
     // An optional delegate to get notified of events
     weak var delegate: TCBlobDownloadDelegate?
-    
+
     // An optional file name set by the user.
     private let preferedFileName: String?
     
@@ -23,7 +23,10 @@ public class TCBlobDownload {
     
     // If the downloaded file couldn't be moved to its final destination, will contain the error
     var error: NSError?
-    
+
+    // Current pgoress of the download, a value between 0 and 1
+    public var progress: Float = 0
+
     // If the final copy of the file was successful, will contain the URL to the final file
     public var resultingURL: NSURL?
 

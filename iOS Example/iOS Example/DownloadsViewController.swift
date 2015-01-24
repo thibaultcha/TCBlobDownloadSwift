@@ -16,6 +16,8 @@ class DownloadsViewController: UIViewController, UITableViewDataSource, UITableV
 
     let manager = TCBlobDownloadManager.sharedInstance
 
+    // Keep track of the current (and probably past soon) downloads
+    // This is the tableview's data source
     var downloads = [TCBlobDownload]()
 
     @IBOutlet weak var downloadsTableView: UITableView!
@@ -55,23 +57,23 @@ class DownloadsViewController: UIViewController, UITableViewDataSource, UITableV
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(kDownloadCellidentifier) as DownloadTableViewCell
-        var download: TCBlobDownload? = self.downloads[indexPath.row]
+        var download: TCBlobDownload = self.downloads[indexPath.row]
 
-        if let fileName = download?.fileName {
+        if let fileName = download.fileName {
             cell.labelFileName.text = fileName
         } else {
             cell.labelFileName.text = ""
         }
 
-        if let downloadTask = download?.downloadTask {
-            if downloadTask.state == NSURLSessionTaskState.Running {
-                cell.buttonPause.titleLabel?.text = "Pause"
-            } else if downloadTask.state == NSURLSessionTaskState.Suspended {
-                cell.buttonPause.titleLabel?.text = "Resume"
-            }
+        if download.downloadTask.state == NSURLSessionTaskState.Running {
+            cell.buttonPause.titleLabel?.text = "Pause"
+        } else if download.downloadTask.state == NSURLSessionTaskState.Suspended {
+            cell.buttonPause.titleLabel?.text = "Resume"
         }
 
-        cell.labelDownload.text = download?.downloadTask.originalRequest.URL.absoluteString
+        cell.progress = download.progress
+
+        cell.labelDownload.text = download.downloadTask.originalRequest.URL.absoluteString
 
         return cell
     }
@@ -89,7 +91,7 @@ class DownloadsViewController: UIViewController, UITableViewDataSource, UITableV
         let index = downloads.indexOfObject(download)
 
         let updateIndexPath = NSIndexPath(forRow: index, inSection: 0)
-        self.downloadsTableView.reloadRowsAtIndexPaths([updateIndexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
+        self.downloadsTableView.reloadRowsAtIndexPaths([updateIndexPath], withRowAnimation: UITableViewRowAnimation.None)
     }
 
     func download(download: TCBlobDownload, didFinishWithError: NSError?, atLocation location: NSURL?) {

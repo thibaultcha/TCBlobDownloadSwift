@@ -110,6 +110,8 @@ public class TCBlobDownloadManager {
             let download = self.downloads[downloadTask.taskIdentifier]!
             let progress = totalBytesExpectedToWrite == NSURLSessionTransferSizeUnknown ? -1 : Float(totalBytesWritten) / Float(totalBytesExpectedToWrite)
 
+            download.progress = progress
+
             dispatch_async(dispatch_get_main_queue()) {
                 download.delegate?.download(download, didProgress: progress, totalBytesWritten: totalBytesWritten, totalBytesExpectedToWrite: totalBytesExpectedToWrite)
                 return
