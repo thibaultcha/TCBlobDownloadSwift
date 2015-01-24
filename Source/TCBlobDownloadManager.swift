@@ -20,10 +20,10 @@ public enum TCBlobDownloadError: Int {
 public class TCBlobDownloadManager {
     // The underlying NSURLSession
     private let session: NSURLSession
-    
+
     // Instance of the underlying class implementing NSURLSessionDownloadDelegate
     private let delegate: DownloadDelegate
-    
+
     // If true, downloads will start immediatly after being created
     public var startImmediatly = true
 
@@ -37,12 +37,14 @@ public class TCBlobDownloadManager {
         
         return Singleton.instance
     }
-    
+
     public init() {
         // TODO: replace with backgroundSession. Gives an unkown error for now.
         let config = NSURLSessionConfiguration.defaultSessionConfiguration()
+        //config.HTTPMaximumConnectionsPerHost = 1
         self.delegate = DownloadDelegate()
         self.session = NSURLSession(configuration: config, delegate: self.delegate, delegateQueue: nil)
+        self.session.sessionDescription = "TCBlobDownloadManger session"
     }
 
     /**
@@ -91,7 +93,7 @@ public class TCBlobDownloadManager {
 
         return downloads
     }
-    
+
     class DownloadDelegate: NSObject, NSURLSessionDownloadDelegate {
         var downloads: [Int: TCBlobDownload] = [:]
         let acceptableStatusCodes: Range<Int> = 200...299

@@ -106,9 +106,10 @@ class DownloadsViewController: UIViewController, UITableViewDataSource, UITableV
     func download(download: TCBlobDownload, didProgress progress: Float, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
         let downloads: NSArray = self.downloads
         let index = downloads.indexOfObject(download)
-
         let updateIndexPath = NSIndexPath(forRow: index, inSection: 0)
-        self.downloadsTableView.reloadRowsAtIndexPaths([updateIndexPath], withRowAnimation: UITableViewRowAnimation.None)
+
+        let cell = self.downloadsTableView.cellForRowAtIndexPath(updateIndexPath) as DownloadTableViewCell
+        cell.progress = progress
     }
 
     func download(download: TCBlobDownload, didFinishWithError: NSError?, atLocation location: NSURL?) {

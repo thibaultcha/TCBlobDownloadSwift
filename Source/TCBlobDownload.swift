@@ -17,10 +17,10 @@ public class TCBlobDownload {
 
     // An optional file name set by the user.
     private let preferedFileName: String?
-    
+
     // An optional destination path for the file. If nil, the file will be downloaded in the current user temporary directory
     private let directory: NSURL?
-    
+
     // If the downloaded file couldn't be moved to its final destination, will contain the error
     var error: NSError?
 
@@ -41,14 +41,15 @@ public class TCBlobDownload {
 
         return NSURL(string: self.fileName!, relativeToURL: destinationPath!)!.URLByStandardizingPath!
     }
-    
+
+    // Initialize a new download assuming the NSURLSessionDownloadTask is already created
     init(downloadTask: NSURLSessionDownloadTask, toDirectory directory: NSURL?, fileName: String?, delegate: TCBlobDownloadDelegate?) {
         self.downloadTask = downloadTask
-        self.delegate = delegate
         self.directory = directory
         self.preferedFileName = fileName
+        self.delegate = delegate
     }
-    
+
     public func cancel() {
         self.downloadTask.cancel()
     }

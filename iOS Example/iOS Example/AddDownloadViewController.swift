@@ -31,7 +31,9 @@ class AddDownloadViewController: UIViewController {
         let downloadURL = NSURL(string: self.fieldURL.text)
         self.delegate?.addDownloadWithURL(downloadURL)
 
+
+        // http://ipv4.download.thinkbroadband.com/100MB.zip
         self.dismissViewControllerAnimated(true, completion: nil)
     }
-    
+
 }
