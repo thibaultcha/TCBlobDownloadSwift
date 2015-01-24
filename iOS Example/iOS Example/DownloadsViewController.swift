@@ -41,12 +41,29 @@ class DownloadsViewController: UIViewController, UITableViewDataSource, UITableV
         }
     }
 
+    // MARK: Downloads management
+
     func addDownloadWithURL(url: NSURL?) {
         let download = self.manager.downloadFileAtURL(url!, toDirectory: nil, withName: nil, andDelegate: self)
         self.downloads.append(download)
 
         let insertIndexPath = NSIndexPath(forRow: self.downloads.count - 1, inSection: 0)
         self.downloadsTableView.insertRowsAtIndexPaths([insertIndexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
+    }
+
+    func didPressPauseButton(sender: UIButton!, event: UIEvent) {
+        let touch: AnyObject? = event.touchesForView(sender)?.anyObject()
+        let location = touch?.locationInView(self.downloadsTableView)
+        let indexPath = self.downloadsTableView.indexPathForRowAtPoint(location!)
+
+        let download = self.downloads[indexPath!.row]
+        if download.downloadTask.state == NSURLSessionTaskState.Running {
+            download.suspend()
+        } else {
+            download.resume()
+        }
+
+        self.downloadsTableView.reloadRowsAtIndexPaths([indexPath!], withRowAnimation: UITableViewRowAnimation.None)
     }
 
     // MARK: UITableViewDataSource
@@ -66,14 +83,14 @@ class DownloadsViewController: UIViewController, UITableViewDataSource, UITableV
         }
 
         if download.downloadTask.state == NSURLSessionTaskState.Running {
-            cell.buttonPause.titleLabel?.text = "Pause"
+            cell.buttonPause.setTitle("Pause", forState: UIControlState.Normal)
         } else if download.downloadTask.state == NSURLSessionTaskState.Suspended {
-            cell.buttonPause.titleLabel?.text = "Resume"
+            cell.buttonPause.setTitle("Resume", forState: UIControlState.Normal)
         }
 
         cell.progress = download.progress
-
         cell.labelDownload.text = download.downloadTask.originalRequest.URL.absoluteString
+        cell.buttonPause.addTarget(self, action: "didPressPauseButton:event:", forControlEvents: UIControlEvents.TouchUpInside)
 
         return cell
     }
