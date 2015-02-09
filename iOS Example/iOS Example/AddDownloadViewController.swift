@@ -9,9 +9,19 @@
 import UIKit
 import TCBlobDownloadSwift
 
-class AddDownloadViewController: UIViewController {
+struct Download {
+    var name: String
+    var url: String
+}
+
+class AddDownloadViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     weak var delegate: DownloadsViewController?
+
+    let downloads = [ Download(name: "10MB", url: "http://ipv4.download.thinkbroadband.com/10MB.zip"),
+                      Download(name: "50MB", url: "http://ipv4.download.thinkbroadband.com/50MB.zip"),
+                      Download(name: "100MB", url: "http://ipv4.download.thinkbroadband.com/100MB.zip"),
+                      Download(name: "512MB", url: "http://ipv4.download.thinkbroadband.com/512MB.zip") ]
 
     @IBOutlet weak var fieldURL: UITextField!
 
@@ -28,12 +38,35 @@ class AddDownloadViewController: UIViewController {
     }
 
     @IBAction func onAddDownload(sender: UIBarButtonItem) {
-        let downloadURL = NSURL(string: self.fieldURL.text)
+        self.addDownload(fromString: self.fieldURL.text)
+    }
+
+    func addDownload(fromString string: NSString) {
+        let downloadURL = NSURL(string: string)
         self.delegate?.addDownloadWithURL(downloadURL)
 
-
-        // http://ipv4.download.thinkbroadband.com/100MB.zip
         self.dismissViewControllerAnimated(true, completion: nil)
+    }
+
+    // MARK: UITableViewDataSource
+
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return self.downloads.count
+    }
+
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier("addDownloadCell", forIndexPath: indexPath) as UITableViewCell
+
+        cell.textLabel?.text = self.downloads[indexPath.row].name
+        
+        return cell
+    }
+
+    // MARK: UITableViewDelegate
+
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        self.fieldURL.text = self.downloads[indexPath.row].url
+        tableView.deselectRowAtIndexPath(indexPath, animated: false)
     }
 
 }
