@@ -16,6 +16,8 @@ class DownloadTableViewCell : UITableViewCell {
     
     @IBOutlet weak var buttonPause: UIButton!
 
+    @IBOutlet weak var buttonCancel: UIButton!
+
     @IBOutlet weak var progressView: UIProgressView!
 
     var progress: Float = 0 {

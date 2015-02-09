@@ -18,12 +18,14 @@ class AddDownloadViewController: UIViewController, UITableViewDataSource, UITabl
 
     weak var delegate: DownloadsViewController?
 
+    @IBOutlet weak var fieldURL: UITextField!
+    
+    @IBOutlet weak var fieldName: UITextField!
+
     let downloads = [ Download(name: "10MB", url: "http://ipv4.download.thinkbroadband.com/10MB.zip"),
                       Download(name: "50MB", url: "http://ipv4.download.thinkbroadband.com/50MB.zip"),
                       Download(name: "100MB", url: "http://ipv4.download.thinkbroadband.com/100MB.zip"),
                       Download(name: "512MB", url: "http://ipv4.download.thinkbroadband.com/512MB.zip") ]
-
-    @IBOutlet weak var fieldURL: UITextField!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,7 +45,7 @@ class AddDownloadViewController: UIViewController, UITableViewDataSource, UITabl
 
     func addDownload(fromString string: NSString) {
         let downloadURL = NSURL(string: string)
-        self.delegate?.addDownloadWithURL(downloadURL)
+        self.delegate?.addDownloadWithURL(downloadURL, name: self.fieldName.text)
 
         self.dismissViewControllerAnimated(true, completion: nil)
     }

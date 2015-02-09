@@ -41,10 +41,20 @@ class DownloadsViewController: UIViewController, UITableViewDataSource, UITableV
         }
     }
 
+    // MARK: private
+
+    private func getDownloadFromButtonPress(sender: UIButton, event: UIEvent) -> (download: TCBlobDownload, indexPath: NSIndexPath) {
+        let touch: AnyObject? = event.touchesForView(sender)?.anyObject()
+        let location = touch?.locationInView(self.downloadsTableView)
+        let indexPath = self.downloadsTableView.indexPathForRowAtPoint(location!)
+
+        return (self.downloads[indexPath!.row], indexPath!)
+    }
+
     // MARK: Downloads management
 
-    func addDownloadWithURL(url: NSURL?) {
-        let download = self.manager.downloadFileAtURL(url!, toDirectory: nil, withName: nil, andDelegate: self)
+    func addDownloadWithURL(url: NSURL?, name: NSString?) {
+        let download = self.manager.downloadFileAtURL(url!, toDirectory: nil, withName: name, andDelegate: self)
         self.downloads.append(download)
 
         let insertIndexPath = NSIndexPath(forRow: self.downloads.count - 1, inSection: 0)
@@ -52,18 +62,21 @@ class DownloadsViewController: UIViewController, UITableViewDataSource, UITableV
     }
 
     func didPressPauseButton(sender: UIButton!, event: UIEvent) {
-        let touch: AnyObject? = event.touchesForView(sender)?.anyObject()
-        let location = touch?.locationInView(self.downloadsTableView)
-        let indexPath = self.downloadsTableView.indexPathForRowAtPoint(location!)
+        let e = self.getDownloadFromButtonPress(sender, event: event)
 
-        let download = self.downloads[indexPath!.row]
-        if download.downloadTask.state == NSURLSessionTaskState.Running {
-            download.suspend()
+        if e.download.downloadTask.state == NSURLSessionTaskState.Running {
+           e.download.suspend()
         } else {
-            download.resume()
+            e.download.resume()
         }
 
-        self.downloadsTableView.reloadRowsAtIndexPaths([indexPath!], withRowAnimation: UITableViewRowAnimation.None)
+        self.downloadsTableView.reloadRowsAtIndexPaths([e.indexPath], withRowAnimation: UITableViewRowAnimation.None)
+    }
+
+    func didPressCancelButton(sender: UIButton!, event: UIEvent) {
+        let e = self.getDownloadFromButtonPress(sender, event: event)
+
+        e.download.cancel()
     }
 
     // MARK: UITableViewDataSource
@@ -79,7 +92,7 @@ class DownloadsViewController: UIViewController, UITableViewDataSource, UITableV
         if let fileName = download.fileName {
             cell.labelFileName.text = fileName
         } else {
-            cell.labelFileName.text = ""
+            cell.labelFileName.text = "..."
         }
 
         if download.downloadTask.state == NSURLSessionTaskState.Running {
@@ -91,6 +104,7 @@ class DownloadsViewController: UIViewController, UITableViewDataSource, UITableV
         cell.progress = download.progress
         cell.labelDownload.text = download.downloadTask.originalRequest.URL.absoluteString
         cell.buttonPause.addTarget(self, action: "didPressPauseButton:event:", forControlEvents: UIControlEvents.TouchUpInside)
+        cell.buttonCancel.addTarget(self, action: "didPressCancelButton:event:", forControlEvents: UIControlEvents.TouchUpInside)
 
         return cell
     }

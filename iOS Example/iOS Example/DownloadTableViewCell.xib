@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6254" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6254" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
         <capability name="Alignment constraints to the first baseline" minToolsVersion="6.0"/>
@@ -40,12 +40,23 @@
                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QTd-75-Gta">
+                        <rect key="frame" x="259" y="29" width="46" height="28"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="46" id="oPS-El-Tba"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                        <state key="normal" title="Cancel">
+                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                        </state>
+                    </button>
                 </subviews>
                 <constraints>
                     <constraint firstItem="Ax8-rY-AUL" firstAttribute="leading" secondItem="eUm-K4-O1i" secondAttribute="leadingMargin" constant="10" id="7Uv-pA-Drh"/>
                     <constraint firstItem="Ax8-rY-AUL" firstAttribute="centerX" secondItem="eUm-K4-O1i" secondAttribute="centerX" constant="8" id="86R-qD-uwu"/>
                     <constraint firstItem="Ax8-rY-AUL" firstAttribute="trailing" secondItem="SGO-Mu-pba" secondAttribute="trailing" id="Efj-Xl-Xgz"/>
                     <constraint firstItem="QE4-bU-CEK" firstAttribute="trailing" secondItem="Ax8-rY-AUL" secondAttribute="trailing" id="IPZ-P1-fEU"/>
+                    <constraint firstItem="QTd-75-Gta" firstAttribute="trailing" secondItem="QE4-bU-CEK" secondAttribute="trailing" id="JhJ-sI-4HJ"/>
                     <constraint firstItem="Ax8-rY-AUL" firstAttribute="centerY" secondItem="eUm-K4-O1i" secondAttribute="centerY" constant="-16" id="KkU-Hy-hKu"/>
                     <constraint firstItem="NcL-8I-2fG" firstAttribute="top" secondItem="eUm-K4-O1i" secondAttribute="topMargin" constant="-1" id="Pi4-84-FKK"/>
                     <constraint firstItem="QE4-bU-CEK" firstAttribute="leading" secondItem="NcL-8I-2fG" secondAttribute="trailing" constant="29" id="RZw-nU-K5u"/>
@@ -57,6 +68,7 @@
                     <constraint firstItem="NcL-8I-2fG" firstAttribute="leading" secondItem="Ax8-rY-AUL" secondAttribute="leading" id="jRA-oi-yGJ"/>
                     <constraint firstItem="Ax8-rY-AUL" firstAttribute="centerX" secondItem="eUm-K4-O1i" secondAttribute="centerX" id="qnO-2E-aEl"/>
                     <constraint firstItem="NcL-8I-2fG" firstAttribute="firstBaseline" secondItem="QE4-bU-CEK" secondAttribute="firstBaseline" id="sAC-Uk-ark"/>
+                    <constraint firstItem="QTd-75-Gta" firstAttribute="top" secondItem="QE4-bU-CEK" secondAttribute="bottom" constant="-1" id="wkQ-dH-VAT"/>
                     <constraint firstItem="NcL-8I-2fG" firstAttribute="leading" secondItem="eUm-K4-O1i" secondAttribute="leadingMargin" constant="7" id="wqH-ZN-phD"/>
                     <constraint firstItem="Ax8-rY-AUL" firstAttribute="top" secondItem="eUm-K4-O1i" secondAttribute="topMargin" constant="29" id="yd8-9E-7Ox"/>
                     <constraint firstAttribute="trailingMargin" secondItem="QE4-bU-CEK" secondAttribute="trailing" constant="7" id="yyR-hc-LQE"/>
@@ -74,6 +86,7 @@
                 </variation>
             </tableViewCellContentView>
             <connections>
+                <outlet property="buttonCancel" destination="QTd-75-Gta" id="ek1-na-roD"/>
                 <outlet property="buttonPause" destination="QE4-bU-CEK" id="4en-kG-2H1"/>
                 <outlet property="labelDownload" destination="Ax8-rY-AUL" id="V29-Kh-1vF"/>
                 <outlet property="labelFileName" destination="NcL-8I-2fG" id="b0l-A9-qHW"/>
