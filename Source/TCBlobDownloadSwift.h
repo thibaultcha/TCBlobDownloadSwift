@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 thibaultcha. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 
 //! Project version number for TCBlobDownloadSwift.
 FOUNDATION_EXPORT double TCBlobDownloadSwiftVersionNumber;

@@ -180,10 +180,10 @@ class TCBlobDownloadManagerTests: XCTestCase {
             func download(download: TCBlobDownload, didProgress progress: Float, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {}
             func download(download: TCBlobDownload, didFinishWithError error: NSError?, atLocation location: NSURL?) {
                 XCTAssertNotNil(error, "No error returned for an erroneous HTTP status code")
-                XCTAssertNotNil(error?.userInfo?[TCBlobDownloadErrorDescriptionKey], "Error userInfo is missing localized description")
-                XCTAssert(error?.userInfo?[TCBlobDownloadErrorHTTPStatusKey] as? NSValue == 404, "Error userInfo is missing status")
+                XCTAssertNotNil(error?.userInfo?[kTCBlobDownloadErrorDescriptionKey], "Error userInfo is missing localized description")
+                XCTAssert(error?.userInfo?[kTCBlobDownloadErrorHTTPStatusKey] as? NSValue == 404, "Error userInfo is missing status")
                 
-                if let requestURL = error?.userInfo?[TCBlobDownloadErrorFailingURLKey] as? NSURL {
+                if let requestURL = error?.userInfo?[kTCBlobDownloadErrorFailingURLKey] as? NSURL {
                     XCTAssertEqual(Httpbin.status(404).absoluteString!, requestURL.absoluteString!, "Error userInfo has wrong TCBlobDownloadErrorFailingURLKey value")
                 } else {
                     XCTFail("Error userInfo TCBlobDownloadErrorFailingURLKey is not an NSURL")

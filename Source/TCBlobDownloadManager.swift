@@ -53,7 +53,7 @@ public class TCBlobDownloadManager {
         Initializer with auto NSURLSession configuration
     */
     public convenience init() {
-        let config = NSURLSessionConfiguration.backgroundSessionConfigurationWithIdentifier(kTCBlobDownloadSessionIdentifier)
+        let config = NSURLSessionConfiguration.defaultSessionConfiguration()
         //config.HTTPMaximumConnectionsPerHost = 1
         self.init(config: config)
     }
