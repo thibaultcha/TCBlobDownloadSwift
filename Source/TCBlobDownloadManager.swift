@@ -8,24 +8,26 @@
 
 import Foundation
 
-public let TCBlobDownloadErrorDomain = "com.tcblobdownloadswift.error"
-public let TCBlobDownloadErrorDescriptionKey = "TCBlobDownloadErrorDescriptionKey"
-public let TCBlobDownloadErrorHTTPStatusKey = "TCBlobDownloadErrorHTTPStatusKey"
-public let TCBlobDownloadErrorFailingURLKey = "TCBlobDownloadFailingURLKey"
+public let kTCBlobDownloadSessionIdentifier = "tcblobdownloadmanager_downloads"
+
+public let kTCBlobDownloadErrorDomain = "com.tcblobdownloadswift.error"
+public let kTCBlobDownloadErrorDescriptionKey = "TCBlobDownloadErrorDescriptionKey"
+public let kTCBlobDownloadErrorHTTPStatusKey = "TCBlobDownloadErrorHTTPStatusKey"
+public let kTCBlobDownloadErrorFailingURLKey = "TCBlobDownloadFailingURLKey"
 
 public enum TCBlobDownloadError: Int {
     case TCBlobDownloadHTTPError = 1
 }
 
 public class TCBlobDownloadManager {
-    // The underlying NSURLSession
-    private let session: NSURLSession
-
     // Instance of the underlying class implementing NSURLSessionDownloadDelegate
     private let delegate: DownloadDelegate
 
     // If true, downloads will start immediatly after being created
     public var startImmediatly = true
+
+    // The underlying NSURLSession
+    public let session: NSURLSession
 
     /**
         A shared instance of TCBlobDownloadManager
@@ -38,13 +40,22 @@ public class TCBlobDownloadManager {
         return Singleton.instance
     }
 
-    public init() {
-        // TODO: replace with backgroundSession. Gives an unkown error for now.
-        let config = NSURLSessionConfiguration.defaultSessionConfiguration()
-        //config.HTTPMaximumConnectionsPerHost = 1
+    /**
+        Initializer for custom NSURLSession configuration
+    */
+    public init(config: NSURLSessionConfiguration) {
         self.delegate = DownloadDelegate()
         self.session = NSURLSession(configuration: config, delegate: self.delegate, delegateQueue: nil)
         self.session.sessionDescription = "TCBlobDownloadManger session"
+    }
+
+    /**
+        Initializer with auto NSURLSession configuration
+    */
+    public convenience init() {
+        let config = NSURLSessionConfiguration.backgroundSessionConfigurationWithIdentifier(kTCBlobDownloadSessionIdentifier)
+        //config.HTTPMaximumConnectionsPerHost = 1
+        self.init(config: config)
     }
 
     /**
@@ -94,6 +105,9 @@ public class TCBlobDownloadManager {
         return downloads
     }
 
+    /**
+        NSURLSessionTask Delegate
+    */
     class DownloadDelegate: NSObject, NSURLSessionDownloadDelegate {
         var downloads: [Int: TCBlobDownload] = [:]
         let acceptableStatusCodes: Range<Int> = 200...299
@@ -142,11 +156,11 @@ public class TCBlobDownloadManager {
                 // according to https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/URLLoadingSystem/NSURLSessionConcepts/NSURLSessionConcepts.html
                 // so let's ignore them as they sometimes appear there for now. (But WTF?)
                 if !validateResponse(response) && (error == nil || error!.domain == NSURLErrorDomain) {
-                    error = NSError(domain: TCBlobDownloadErrorDomain,
+                    error = NSError(domain: kTCBlobDownloadErrorDomain,
                                       code: TCBlobDownloadError.TCBlobDownloadHTTPError.rawValue,
-                                  userInfo: [TCBlobDownloadErrorDescriptionKey: "Erroneous HTTP status code: \(response.statusCode)",
-                                             TCBlobDownloadErrorFailingURLKey: task.originalRequest.URL,
-                                             TCBlobDownloadErrorHTTPStatusKey: response.statusCode])
+                                  userInfo: [kTCBlobDownloadErrorDescriptionKey: "Erroneous HTTP status code: \(response.statusCode)",
+                                             kTCBlobDownloadErrorFailingURLKey: task.originalRequest.URL,
+                                             kTCBlobDownloadErrorHTTPStatusKey: response.statusCode])
                 }
             }
 
