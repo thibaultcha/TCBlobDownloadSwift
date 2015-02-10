@@ -6,10 +6,8 @@
 
 File downloads for iOS 7+ with [NSURLSession][nsurlsession-url] in Swift.
 
-TCBlobDownloadSwift is not yet completed in terms of features but can already be used in a production application.
-
 ### Features
-- [x] File downloads with iOS 7's `NSURLSession` (including pause/resume)
+- [x] File downloads with iOS 7's `NSURLSession` (including background downloads/pause/resume)
 - [x] File management (download directory + customizable filename)
 - [x] Full customization of your `NSURLSessionTasks` (maximum number of concurrent connections)
 - [x] Progression/Completion delegate methods
