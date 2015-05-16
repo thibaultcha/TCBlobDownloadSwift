@@ -43,6 +43,10 @@ class TCBlobDownloadManagerTests: XCTestCase {
         super.tearDown()
     }
 
+    func waitForExpectationsWithDefaultHandler(timeout: NSTimeInterval = 10, handler: XCWaitCompletionHandler! = { if $0 != nil {println($0)} }) {
+        self.waitForExpectationsWithTimeout(timeout, handler: handler)
+    }
+
     func testSharedInstance() {
         let manager: TCBlobDownloadManager = TCBlobDownloadManager.sharedInstance
         XCTAssertNotNil(manager, "sharedInstance is nil.")
@@ -60,6 +64,7 @@ class TCBlobDownloadManagerTests: XCTestCase {
             }
             func download(download: TCBlobDownload, didProgress progress: Float, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {}
             func download(download: TCBlobDownload, didFinishWithError error: NSError?, atLocation location: NSURL?) {
+                XCTAssertNil(error, "Download failed with error.")
                 XCTAssertNotNil(location, "Successful download didn't send the location parameter")
                 // Xcode error
                 //XCTAssertEqual(expectedResultingURL.absoluteString!, location?.absoluteString!, "Location parameter doesn't match the expected URL")
@@ -71,12 +76,24 @@ class TCBlobDownloadManagerTests: XCTestCase {
         
         TCBlobDownloadManager.sharedInstance.downloadFileAtURL(Httpbin.fixtureWithBytes(), toDirectory: kTestsDirectory, withName: "first_test", andDelegate: downloadHandler)
         
-        self.waitForExpectationsWithTimeout(10) { (error) in
-            if error != nil {
-                println(error)
-            }
-        }
+        self.waitForExpectationsWithDefaultHandler()
         
+        let exists = NSFileManager.defaultManager().fileExistsAtPath(expectedResultingURL.path!)
+        XCTAssertTrue(exists, "File not downloaded at given path")
+    }
+
+    func testDownloadFileAtURLWithClosures_to_directory() {
+        let expectation = self.expectationWithDescription("should download the file at given directory")
+        let expectedResultingURL = NSURL(string: "first_test", relativeToURL: kTestsDirectory)!
+
+        TCBlobDownloadManager.sharedInstance.downloadFileAtURL(Httpbin.fixtureWithBytes(), toDirectory: kTestsDirectory, withName: "first_test", progression: nil) { (error, location) -> Void in
+            XCTAssertNil(error, "Download failed with error.")
+            XCTAssertNotNil(location, "Successful download didn't send the location parameter")
+            expectation.fulfill()
+        }
+
+        self.waitForExpectationsWithDefaultHandler()
+
         let exists = NSFileManager.defaultManager().fileExistsAtPath(expectedResultingURL.path!)
         XCTAssertTrue(exists, "File not downloaded at given path")
     }
@@ -86,7 +103,6 @@ class TCBlobDownloadManagerTests: XCTestCase {
         class DownloadHandler: NSObject, TCBlobDownloadDelegate {
             let expectation: XCTestExpectation
             var didProgressCalled = false
-            var didFinishCalled = false
             init(expectation: XCTestExpectation) {
                 self.expectation = expectation
             }
@@ -94,7 +110,6 @@ class TCBlobDownloadManagerTests: XCTestCase {
                 didProgressCalled = true
             }
             func download(download: TCBlobDownload, didFinishWithError error: NSError?, atLocation location: NSURL?) {
-                didFinishCalled = true
                 expectation.fulfill()
             }
         }
@@ -103,14 +118,24 @@ class TCBlobDownloadManagerTests: XCTestCase {
         
         TCBlobDownloadManager.sharedInstance.downloadFileAtURL(Httpbin.fixtureWithBytes(), toDirectory: kTestsDirectory, withName: nil, andDelegate: downloadHandler)
 
-        self.waitForExpectationsWithTimeout(kDefaultTimeout) { (error) in
-            if error != nil {
-                println(error)
-            }
-        }
+        self.waitForExpectationsWithDefaultHandler()
         
         XCTAssertTrue(downloadHandler.didProgressCalled, "downloadDidProgress not called")
-        XCTAssertTrue(downloadHandler.didFinishCalled, "downloadDidFinish not called")
+    }
+
+    func testDownloadFileAtURLWithClosures_call_methods() {
+        let expectation = self.expectationWithDescription("should call the completion block")
+        var didCallProgress = false
+
+        TCBlobDownloadManager.sharedInstance.downloadFileAtURL(Httpbin.fixtureWithBytes(), toDirectory: kTestsDirectory, withName: nil, progression: { (progress, totalBytesWritten, totalBytesExpectedToWrite) -> Void in
+            didCallProgress = true
+        }) { (error, location) -> Void in
+            expectation.fulfill()
+        }
+
+        self.waitForExpectationsWithDefaultHandler()
+
+        XCTAssertTrue(didCallProgress, "progression closure not called")
     }
     
     func testDownloadFileAtURLWithDelegate_methods_parameters() {
@@ -135,11 +160,21 @@ class TCBlobDownloadManagerTests: XCTestCase {
         
         TCBlobDownloadManager.sharedInstance.downloadFileAtURL(Httpbin.fixtureWithBytes(bytes: 10), toDirectory: kTestsDirectory, withName: nil, andDelegate: downloadHandler)
         
-        self.waitForExpectationsWithTimeout(kDefaultTimeout) { (error) in
-            if error != nil {
-                println(error)
-            }
+        self.waitForExpectationsWithDefaultHandler()
+    }
+
+    func testDownloadFileAtURLWithClosures_parameters() {
+        let expectation = self.expectationWithDescription("should call the closures with the correct parameters")
+
+        TCBlobDownloadManager.sharedInstance.downloadFileAtURL(Httpbin.fixtureWithBytes(bytes: 10), toDirectory: kTestsDirectory, withName: nil, progression: { (progress, totalBytesWritten, totalBytesExpectedToWrite) -> Void in
+            XCTAssert(10 == totalBytesWritten)
+            XCTAssert(10 == totalBytesExpectedToWrite)
+            XCTAssert(1.0 == progress)
+        }) { (error, location) -> Void in
+            expectation.fulfill()
         }
+
+        self.waitForExpectationsWithDefaultHandler()
     }
 
     func testDownloadFileAtURLWithDelegate_methods_on_main_thread() {
@@ -163,11 +198,20 @@ class TCBlobDownloadManagerTests: XCTestCase {
 
         TCBlobDownloadManager.sharedInstance.downloadFileAtURL(Httpbin.fixtureWithBytes(bytes: 10), toDirectory: kTestsDirectory, withName: nil, andDelegate: downloadHandler)
 
-        self.waitForExpectationsWithTimeout(kDefaultTimeout) { (error) in
-            if error != nil {
-                println(error)
-            }
+        self.waitForExpectationsWithDefaultHandler()
+    }
+
+    func testDownloadFileAtURLWithClosures_on_main_thread() {
+        let expectation = self.expectationWithDescription("should call the closures on the main thread")
+
+        TCBlobDownloadManager.sharedInstance.downloadFileAtURL(Httpbin.fixtureWithBytes(bytes: 10), toDirectory: kTestsDirectory, withName: nil, progression: { (progress, totalBytesWritten, totalBytesExpectedToWrite) -> Void in
+            XCTAssert(NSThread.isMainThread(), "progression closure not called on main thread")
+        }) { (error, location) -> Void in
+            XCTAssert(NSThread.isMainThread(), "completion closure not called on main thread")
+            expectation.fulfill()
         }
+
+        self.waitForExpectationsWithDefaultHandler()
     }
 
     func testDownloadFileAtURLWithDelegate_invalid_response() {
@@ -197,11 +241,7 @@ class TCBlobDownloadManagerTests: XCTestCase {
 
         TCBlobDownloadManager.sharedInstance.downloadFileAtURL(Httpbin.status(404), toDirectory: kTestsDirectory, withName: nil, andDelegate: downloadHandler)
         
-        self.waitForExpectationsWithTimeout(kDefaultTimeout) { (error) in
-            if error != nil {
-                println(error)
-            }
-        }
+        self.waitForExpectationsWithDefaultHandler()
     }
 
     func testDownloadFileAtURLWithDelegate_return_download_instance() {

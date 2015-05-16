@@ -86,6 +86,13 @@ public class TCBlobDownloadManager {
         return self.downloadWithDownload(download)
     }
 
+    public func downloadFileAtURL(url: NSURL, toDirectory directory: NSURL?, withName name: String?, progression: progressionHandler?, completion: completionHandler?) -> TCBlobDownload {
+        let downloadTask = self.session.downloadTaskWithURL(url)
+        let download = TCBlobDownload(downloadTask: downloadTask, toDirectory: directory, fileName: name, progression: progression, completion: completion)
+
+        return self.downloadWithDownload(download)
+    }
+
     /**
         Resume a download with previously acquired resume data.
     
@@ -151,6 +158,7 @@ class DownloadDelegate: NSObject, NSURLSessionDownloadDelegate {
 
         dispatch_async(dispatch_get_main_queue()) {
             download.delegate?.download(download, didProgress: progress, totalBytesWritten: totalBytesWritten, totalBytesExpectedToWrite: totalBytesExpectedToWrite)
+            download.progression?(progress: progress, totalBytesWritten: totalBytesWritten, totalBytesExpectedToWrite: totalBytesExpectedToWrite)
             return
         }
     }
@@ -189,14 +197,8 @@ class DownloadDelegate: NSObject, NSURLSessionDownloadDelegate {
 
         dispatch_async(dispatch_get_main_queue()) {
             download.delegate?.download(download, didFinishWithError: error, atLocation: download.resultingURL)
+            download.completion?(error: error, location: download.resultingURL)
             return
         }
     }
-}
-
-// MARK: TCBlobDownloadDelegate
-
-public protocol TCBlobDownloadDelegate: class {
-    func download(download: TCBlobDownload, didProgress progress: Float, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64)
-    func download(download: TCBlobDownload, didFinishWithError: NSError?, atLocation location: NSURL?)
 }

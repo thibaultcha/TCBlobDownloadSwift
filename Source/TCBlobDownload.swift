@@ -8,12 +8,19 @@
 
 import Foundation
 
+public typealias progressionHandler = ((progress: Float, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) -> Void)!
+public typealias completionHandler = ((error: NSError?, location: NSURL?) -> Void)!
+
 public class TCBlobDownload {
     /// The underlying download task.
     public let downloadTask: NSURLSessionDownloadTask
 
     /// An optional delegate to get notified of events.
     weak var delegate: TCBlobDownloadDelegate?
+
+    var progression: progressionHandler
+
+    var completion: completionHandler
 
     /// An optional file name set by the user.
     private let preferedFileName: String?
@@ -58,6 +65,15 @@ public class TCBlobDownload {
     }
 
     /**
+        
+    */
+    convenience init(downloadTask: NSURLSessionDownloadTask, toDirectory directory: NSURL?, fileName: String?, progression: progressionHandler?, completion: completionHandler?) {
+        self.init(downloadTask: downloadTask, toDirectory: directory, fileName: fileName, delegate: nil)
+        self.progression = progression
+        self.completion = completion
+    }
+
+    /**
         Cancel a download. The download cannot be resumed after calling this method.
     
         :see: `NSURLSessionDownloadTask -cancel`
@@ -99,6 +115,13 @@ public class TCBlobDownload {
 
     // TODO: closures
     // TODO: remaining time
+}
+
+// MARK: TCBlobDownloadDelegate
+
+public protocol TCBlobDownloadDelegate: class {
+    func download(download: TCBlobDownload, didProgress progress: Float, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64)
+    func download(download: TCBlobDownload, didFinishWithError: NSError?, atLocation location: NSURL?)
 }
 
 // MARK: - Printable
