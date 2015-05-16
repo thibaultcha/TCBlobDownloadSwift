@@ -20,28 +20,24 @@ public enum TCBlobDownloadError: Int {
 }
 
 public class TCBlobDownloadManager {
-    // Instance of the underlying class implementing NSURLSessionDownloadDelegate
+    /**
+        A shared instance of `TCBlobDownloadManager`.
+    */
+    public static let sharedInstance = TCBlobDownloadManager()
+
+    /// Instance of the underlying class implementing `NSURLSessionDownloadDelegate`.
     private let delegate: DownloadDelegate
 
-    // If true, downloads will start immediatly after being created
+    /// If `true`, downloads will start immediatly after being created. `true` by default.
     public var startImmediatly = true
 
-    // The underlying NSURLSession
+    /// The underlying `NSURLSession`.
     public let session: NSURLSession
 
     /**
-        A shared instance of TCBlobDownloadManager
-    */
-    public class var sharedInstance: TCBlobDownloadManager {
-        struct Singleton {
-            static let instance = TCBlobDownloadManager()
-        }
-        
-        return Singleton.instance
-    }
+        Custom `NSURLSessionConfiguration` init.
 
-    /**
-        Initializer for custom NSURLSession configuration
+        :param: config The configuration used to manage the underlying session.
     */
     public init(config: NSURLSessionConfiguration) {
         self.delegate = DownloadDelegate()
@@ -50,7 +46,7 @@ public class TCBlobDownloadManager {
     }
 
     /**
-        Initializer with auto NSURLSession configuration
+        Default `NSURLSessionConfiguration` init.
     */
     public convenience init() {
         let config = NSURLSessionConfiguration.defaultSessionConfiguration()
@@ -60,9 +56,10 @@ public class TCBlobDownloadManager {
 
     /**
         Base method to start a download, called by other download methods.
-        Not public.
+    
+        :param: download Download to start.
     */
-    func downloadWithDownload(download: TCBlobDownload) -> TCBlobDownload {
+    private func downloadWithDownload(download: TCBlobDownload) -> TCBlobDownload {
         self.delegate.downloads[download.downloadTask.taskIdentifier] = download
 
         if self.startImmediatly {
@@ -73,7 +70,14 @@ public class TCBlobDownloadManager {
     }
 
     /**
-        Start a download at given URL
+        Start downloading the file at the given URL.
+    
+        :param: url NSURL of the file to download.
+        :param: directory Directory Where to copy the file once the download is completed. If `nil`, the file will be downloaded in the current user temporary directory/
+        :param: name Name to give to the file once the download is completed.
+        :param: delegate An eventual delegate for this download.
+
+        :return: A `TCBlobDownload` instance.
     */
     public func downloadFileAtURL(url: NSURL, toDirectory directory: NSURL?, withName name: String?, andDelegate delegate: TCBlobDownloadDelegate?) -> TCBlobDownload {
         let downloadTask = self.session.downloadTaskWithURL(url)
@@ -83,7 +87,16 @@ public class TCBlobDownloadManager {
     }
 
     /**
-        Start a download with given resumeData
+        Resume a download with previously acquired resume data.
+    
+        :see: `TCBlobDownload -cancelWithResumeData:` to produce this data.
+
+        :param: resumeData Data blob produced by a previous download cancellation.
+        :param: directory Directory Where to copy the file once the download is completed. If `nil`, the file will be downloaded in the current user temporary directory/
+        :param: name Name to give to the file once the download is completed.
+        :param: delegate An eventual delegate for this download.
+    
+        :return: A `TCBlobDownload` instance.
     */
     public func downloadFileWithResumeData(resumeData: NSData, toDirectory directory: NSURL?, withName name: String?, andDelegate delegate: TCBlobDownloadDelegate?) -> TCBlobDownload {
         let downloadTask = self.session.downloadTaskWithResumeData(resumeData)
@@ -92,10 +105,17 @@ public class TCBlobDownloadManager {
         return self.downloadWithDownload(download)
     }
 
+    /**
+        Gets the downloads in a given state currently being processed by the instance of `TCBlobDownloadManager`.
+    
+        :param: state The state by which to filter the current downloads.
+        
+        :return: An `Array` of all current downloads with the given state.
+    */
     public func currentDownloadsFilteredByState(state: NSURLSessionTaskState?) -> [TCBlobDownload] {
         var downloads = [TCBlobDownload]()
 
-        // Should be functional as soon as Dictionary supports reduce/filter
+        // TODO: make functional as soon as Dictionary supports reduce/filter.
         for download in self.delegate.downloads.values {
             if state == nil || download.downloadTask.state == state {
                 downloads.append(download)
