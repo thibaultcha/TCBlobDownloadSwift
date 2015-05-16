@@ -11,6 +11,8 @@ import Foundation
 public typealias progressionHandler = ((progress: Float, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) -> Void)!
 public typealias completionHandler = ((error: NSError?, location: NSURL?) -> Void)!
 
+// MARK: TCBlobDownload
+
 public class TCBlobDownload {
     /// The underlying download task.
     public let downloadTask: NSURLSessionDownloadTask
@@ -18,8 +20,10 @@ public class TCBlobDownload {
     /// An optional delegate to get notified of events.
     weak var delegate: TCBlobDownloadDelegate?
 
+    /// An optional progression closure periodically executed when a chunk of data has been received.
     var progression: progressionHandler
 
+    /// An optional completion closure executed when a download was completed by the download task.
     var completion: completionHandler
 
     /// An optional file name set by the user.
@@ -31,7 +35,7 @@ public class TCBlobDownload {
     /// Will contain an error if the downloaded file couldn't be moved to its final destination.
     var error: NSError?
 
-    /// Current progress of the download, a value between 0 and 1. 0 means the download hasn't started and 1 means the download is completed.
+    /// Current progress of the download, a value between 0 and 1. 0 means nothing was received and 1 means the download is completed.
     public var progress: Float = 0
 
     /// If the moving of the file after downloading was successful, will contain the `NSURL` pointing to the final file.
@@ -120,11 +124,31 @@ public class TCBlobDownload {
 // MARK: TCBlobDownloadDelegate
 
 public protocol TCBlobDownloadDelegate: class {
+    /**
+        Periodically informs the delegate that a chunk of data has been received (similar to `NSURLSession -URLSession:dataTask:didReceiveData:`).
+    
+        :see: `NSURLSession -URLSession:dataTask:didReceiveData:`
+    
+        :param: download The download that received a chunk of data.
+        :param: progress The current progress of the download, between 0 and 1. 0 means nothing was received and 1 means the download is completed.
+        :param: totalBytesWritten The total number of bytes the download has currently written to the disk.
+        :param: totalBytesExpectedToWrite The total number of bytes the download will write to the disk once completed.
+    */
     func download(download: TCBlobDownload, didProgress progress: Float, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64)
-    func download(download: TCBlobDownload, didFinishWithError: NSError?, atLocation location: NSURL?)
+
+    /**
+        Informs the delegate that the download was completed (similar to `NSURLSession -URLSession:task:didCompleteWithError:`).
+    
+        :see: `NSURLSession -URLSession:task:didCompleteWithError:`
+    
+        :param: download The download that received a chunk of data.
+        :param: error An eventual error. If `nil`, consider the download as being successful.
+        :param: location The location where the downloaded file can be found.
+    */
+    func download(download: TCBlobDownload, didFinishWithError error: NSError?, atLocation location: NSURL?)
 }
 
-// MARK: - Printable
+// MARK: Printable
 
 extension TCBlobDownload: Printable {
     public var description: String {

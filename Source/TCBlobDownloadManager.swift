@@ -15,9 +15,13 @@ public let kTCBlobDownloadErrorDescriptionKey = "TCBlobDownloadErrorDescriptionK
 public let kTCBlobDownloadErrorHTTPStatusKey = "TCBlobDownloadErrorHTTPStatusKey"
 public let kTCBlobDownloadErrorFailingURLKey = "TCBlobDownloadFailingURLKey"
 
+// MARK: TCBlobDownloadError
+
 public enum TCBlobDownloadError: Int {
     case TCBlobDownloadHTTPError = 1
 }
+
+// MARK: TCBlobDownloadManager
 
 public class TCBlobDownloadManager {
     /**
@@ -192,7 +196,7 @@ class DownloadDelegate: NSObject, NSURLSessionDownloadDelegate {
             }
         }
 
-        // Remove reference to the download
+        // Remove the reference to the download
         self.downloads.removeValueForKey(task.taskIdentifier)
 
         dispatch_async(dispatch_get_main_queue()) {
