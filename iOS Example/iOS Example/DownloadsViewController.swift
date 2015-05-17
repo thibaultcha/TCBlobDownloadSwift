@@ -35,8 +35,8 @@ class DownloadsViewController: UIViewController, UITableViewDataSource, UITableV
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "toAddDownload" {
-            let destinationNC = segue.destinationViewController as UINavigationController
-            let destinationVC = destinationNC.topViewController as AddDownloadViewController
+            let destinationNC = segue.destinationViewController as! UINavigationController
+            let destinationVC = destinationNC.topViewController as! AddDownloadViewController
             destinationVC.delegate = self
         }
     }
@@ -44,16 +44,17 @@ class DownloadsViewController: UIViewController, UITableViewDataSource, UITableV
     // MARK: private
 
     private func getDownloadFromButtonPress(sender: UIButton, event: UIEvent) -> (download: TCBlobDownload, indexPath: NSIndexPath) {
-        let touch: AnyObject? = event.touchesForView(sender)?.anyObject()
-        let location = touch?.locationInView(self.downloadsTableView)
-        let indexPath = self.downloadsTableView.indexPathForRowAtPoint(location!)
+        //let touch: AnyObject? = event.touchesForView(sender)?.anyObject()
+        let touch = event.touchesForView(sender)?.first as! UITouch
+        let location = touch.locationInView(self.downloadsTableView)
+        let indexPath = self.downloadsTableView.indexPathForRowAtPoint(location)
 
         return (self.downloads[indexPath!.row], indexPath!)
     }
 
     // MARK: Downloads management
 
-    func addDownloadWithURL(url: NSURL?, name: NSString?) {
+    func addDownloadWithURL(url: NSURL?, name: String?) {
         let download = self.manager.downloadFileAtURL(url!, toDirectory: nil, withName: name, andDelegate: self)
         self.downloads.append(download)
 
@@ -86,7 +87,7 @@ class DownloadsViewController: UIViewController, UITableViewDataSource, UITableV
     }
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(kDownloadCellidentifier) as DownloadTableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier(kDownloadCellidentifier) as! DownloadTableViewCell
         var download: TCBlobDownload = self.downloads[indexPath.row]
 
         if let fileName = download.fileName {
@@ -102,7 +103,7 @@ class DownloadsViewController: UIViewController, UITableViewDataSource, UITableV
         }
 
         cell.progress = download.progress
-        cell.labelDownload.text = download.downloadTask.originalRequest.URL.absoluteString
+        cell.labelDownload.text = download.downloadTask.originalRequest.URL?.absoluteString
         cell.buttonPause.addTarget(self, action: "didPressPauseButton:event:", forControlEvents: UIControlEvents.TouchUpInside)
         cell.buttonCancel.addTarget(self, action: "didPressCancelButton:event:", forControlEvents: UIControlEvents.TouchUpInside)
 
@@ -122,7 +123,7 @@ class DownloadsViewController: UIViewController, UITableViewDataSource, UITableV
         let index = downloads.indexOfObject(download)
         let updateIndexPath = NSIndexPath(forRow: index, inSection: 0)
 
-        let cell = self.downloadsTableView.cellForRowAtIndexPath(updateIndexPath) as DownloadTableViewCell
+        let cell = self.downloadsTableView.cellForRowAtIndexPath(updateIndexPath) as! DownloadTableViewCell
         cell.progress = progress
     }
 
