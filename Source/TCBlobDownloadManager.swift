@@ -15,13 +15,9 @@ public let kTCBlobDownloadErrorDescriptionKey = "TCBlobDownloadErrorDescriptionK
 public let kTCBlobDownloadErrorHTTPStatusKey = "TCBlobDownloadErrorHTTPStatusKey"
 public let kTCBlobDownloadErrorFailingURLKey = "TCBlobDownloadFailingURLKey"
 
-// MARK: TCBlobDownloadError
-
 public enum TCBlobDownloadError: Int {
     case TCBlobDownloadHTTPError = 1
 }
-
-// MARK: TCBlobDownloadManager
 
 public class TCBlobDownloadManager {
     /**
@@ -90,6 +86,17 @@ public class TCBlobDownloadManager {
         return self.downloadWithDownload(download)
     }
 
+    /**
+        Start downloading the file at the given URL.
+
+        :param: url NSURL of the file to download.
+        :param: directory Directory Where to copy the file once the download is completed. If `nil`, the file will be downloaded in the current user temporary directory/
+        :param: name Name to give to the file once the download is completed.
+        :param: progression A closure executed periodically when a chunk of data is received.
+        :param: completion A closure executed when the download has been completed.
+
+        :return: A `TCBlobDownload` instance.
+    */
     public func downloadFileAtURL(url: NSURL, toDirectory directory: NSURL?, withName name: String?, progression: progressionHandler?, completion: completionHandler?) -> TCBlobDownload {
         let downloadTask = self.session.downloadTaskWithURL(url)
         let download = TCBlobDownload(downloadTask: downloadTask, toDirectory: directory, fileName: name, progression: progression, completion: completion)
@@ -137,8 +144,6 @@ public class TCBlobDownloadManager {
     }
 }
 
-
-// MARK: DownloadDelegate
 
 class DownloadDelegate: NSObject, NSURLSessionDownloadDelegate {
     var downloads: [Int: TCBlobDownload] = [:]

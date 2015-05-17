@@ -11,8 +11,6 @@ import Foundation
 public typealias progressionHandler = ((progress: Float, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) -> Void)!
 public typealias completionHandler = ((error: NSError?, location: NSURL?) -> Void)!
 
-// MARK: TCBlobDownload
-
 public class TCBlobDownload {
     /// The underlying download task.
     public let downloadTask: NSURLSessionDownloadTask
@@ -117,11 +115,9 @@ public class TCBlobDownload {
         self.downloadTask.cancelByProducingResumeData(completionHandler)
     }
 
-    // TODO: closures
     // TODO: remaining time
+    // TODO: instanciable TCBlobDownloads
 }
-
-// MARK: TCBlobDownloadDelegate
 
 public protocol TCBlobDownloadDelegate: class {
     /**
