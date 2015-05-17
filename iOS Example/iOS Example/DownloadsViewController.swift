@@ -41,10 +41,7 @@ class DownloadsViewController: UIViewController, UITableViewDataSource, UITableV
         }
     }
 
-    // MARK: private
-
     private func getDownloadFromButtonPress(sender: UIButton, event: UIEvent) -> (download: TCBlobDownload, indexPath: NSIndexPath) {
-        //let touch: AnyObject? = event.touchesForView(sender)?.anyObject()
         let touch = event.touchesForView(sender)?.first as! UITouch
         let location = touch.locationInView(self.downloadsTableView)
         let indexPath = self.downloadsTableView.indexPathForRowAtPoint(location)
