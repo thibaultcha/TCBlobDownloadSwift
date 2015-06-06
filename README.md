@@ -23,12 +23,6 @@ See the [Usage](#usage) section for examples.
 
 ##### Cocoapods
 
-Starting from [Cocoapods][cocoapods-url] 0.36, Swift supports enable you to install this library as a pod:
-
-```
-$ [sudo] gem install cocoapods --pre
-```
-
 Add the following to your Podfile:
 
 ```ruby
@@ -36,7 +30,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '8.0'
 use_frameworks!
 
-pod 'TCBlobDownloadSwift', '~> 0.0.1'
+pod 'TCBlobDownloadSwift', '~> 0.1.0'
 ```
 
 And run:
@@ -73,11 +67,11 @@ import TCBlobDownloadSwift
 // Here is a simple delegate implementing TCBlobDownloadDelegate.
 class DownloadHandler: NSObject, TCBlobDownloadDelegate {
   init() {}
-  
+
   func download(download: TCBlobDownload, didProgress progress: Float, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
     println("\(progress*100)% downloaded")
   }
-  
+
   func download(download: TCBlobDownload, didFinishWithError error: NSError?, atLocation location: NSURL?) {
     println("file downloaded at \(location)")
   }
