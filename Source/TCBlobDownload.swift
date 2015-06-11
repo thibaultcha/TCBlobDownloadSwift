@@ -16,13 +16,13 @@ public class TCBlobDownload {
     public let downloadTask: NSURLSessionDownloadTask
 
     /// An optional delegate to get notified of events.
-    weak var delegate: TCBlobDownloadDelegate?
+    public weak var delegate: TCBlobDownloadDelegate?
 
     /// An optional progression closure periodically executed when a chunk of data has been received.
-    var progression: progressionHandler
+    public var progression: progressionHandler
 
     /// An optional completion closure executed when a download was completed by the download task.
-    var completion: completionHandler
+    public var completion: completionHandler
 
     /// An optional file name set by the user.
     private let preferedFileName: String?
