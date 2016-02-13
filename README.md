@@ -21,7 +21,7 @@ See the [Usage](#usage) section for examples.
 
 ### Installation
 
-##### Cocoapods
+##### CocoaPods
 
 Add the following to your Podfile:
 
@@ -39,7 +39,7 @@ And run:
 $ pod install
 ```
 
-[Here][cocoapod-swift-help] is a helpful article about setting up your project to use Cocoapods with Swift.
+[Here][cocoapod-swift-help] is a helpful article about setting up your project to use CocoaPods with Swift.
 
 ##### Import as an embedded framework
 
