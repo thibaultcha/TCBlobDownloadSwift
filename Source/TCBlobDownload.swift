@@ -41,14 +41,28 @@ public class TCBlobDownload {
 
     /// A computed property to get the filename of the downloaded file.
     public var fileName: String? {
+        
         return self.preferedFileName ?? self.downloadTask.response?.suggestedFilename
     }
 
     /// A computed destination URL depending on the `destinationPath`, `fileName`, and `suggestedFileName` from the underlying `NSURLResponse`.
+    
     public var destinationURL: NSURL {
-        let destinationPath = self.directory ?? NSURL(fileURLWithPath: NSTemporaryDirectory())
-
-        return NSURL(string: self.fileName!, relativeToURL: destinationPath!)!.URLByStandardizingPath!
+        
+        let destinationPath = self.directory ?? NSURL(string: NSTemporaryDirectory())
+        
+        let path = "\(destinationPath!)" + self.fileName!
+        let data = path.dataUsingEncoding(NSUTF8StringEncoding)
+        
+    /// Filename with spaces fix
+        
+        if #available(OSX 10.11, *) {
+            return NSURL(dataRepresentation: data!, relativeToURL: nil)
+        } else {
+            return NSURL(string: path.stringByAddingPercentEscapesUsingEncoding(NSUTF8StringEncoding)!)!
+            
+        }
+        
     }
 
     /**
@@ -111,7 +125,7 @@ public class TCBlobDownload {
 
         :param: completionHandler A completion handler that is called when the download has been successfully canceled. If the download is resumable, the completion handler is provided with a resumeData object.
     */
-    public func cancelWithResumeData(completionHandler: (NSData!) -> Void) {
+    public func cancelWithResumeData(completionHandler: (NSData?) -> Void) {
         self.downloadTask.cancelByProducingResumeData(completionHandler)
     }
 
@@ -146,7 +160,7 @@ public protocol TCBlobDownloadDelegate: class {
 
 // MARK: Printable
 
-extension TCBlobDownload: Printable {
+extension TCBlobDownload: CustomStringConvertible {
     public var description: String {
         var parts: [String] = []
         var state: String
@@ -159,11 +173,12 @@ extension TCBlobDownload: Printable {
         }
         
         parts.append("TCBlobDownload")
-        parts.append("URL: \(self.downloadTask.originalRequest.URL)")
+        parts.append("URL: \(self.downloadTask.originalRequest!.URL)")
         parts.append("Download task state: \(state)")
         parts.append("destinationPath: \(self.directory)")
         parts.append("fileName: \(self.fileName)")
         
-        return join(" | ", parts)
+        return parts.joinWithSeparator("|")
+        //return join(" | ", parts)
     }
 }

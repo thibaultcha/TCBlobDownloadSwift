@@ -80,6 +80,7 @@ public class TCBlobDownloadManager {
         :return: A `TCBlobDownload` instance.
     */
     public func downloadFileAtURL(url: NSURL, toDirectory directory: NSURL?, withName name: String?, andDelegate delegate: TCBlobDownloadDelegate?) -> TCBlobDownload {
+        
         let downloadTask = self.session.downloadTaskWithURL(url)
         let download = TCBlobDownload(downloadTask: downloadTask, toDirectory: directory, fileName: name, delegate: delegate)
 
@@ -150,13 +151,15 @@ class DownloadDelegate: NSObject, NSURLSessionDownloadDelegate {
     let acceptableStatusCodes: Range<Int> = 200...299
 
     func validateResponse(response: NSHTTPURLResponse) -> Bool {
-        return contains(self.acceptableStatusCodes, response.statusCode)
+        
+        return self.acceptableStatusCodes.contains(response.statusCode)
+        //return contains(self.acceptableStatusCodes, response.statusCode)
     }
 
     // MARK: NSURLSessionDownloadDelegate
 
     func URLSession(session: NSURLSession, downloadTask: NSURLSessionDownloadTask, didResumeAtOffset fileOffset: Int64, expectedTotalBytes: Int64) {
-        println("Resume at offset: \(fileOffset) total expected: \(expectedTotalBytes)")
+        print("Resume at offset: \(fileOffset) total expected: \(expectedTotalBytes)")
     }
 
     func URLSession(session: NSURLSession, downloadTask: NSURLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
@@ -174,14 +177,26 @@ class DownloadDelegate: NSObject, NSURLSessionDownloadDelegate {
 
     func URLSession(session: NSURLSession, downloadTask: NSURLSessionDownloadTask, didFinishDownloadingToURL location: NSURL) {
         let download = self.downloads[downloadTask.taskIdentifier]!
-        var fileError: NSError?
         var resultingURL: NSURL?
+        
+        do {
+            try  NSFileManager.defaultManager().replaceItemAtURL(download.destinationURL, withItemAtURL: location, backupItemName: nil, options: [], resultingItemURL: &resultingURL)
+                
+                download.resultingURL = resultingURL
 
-        if NSFileManager.defaultManager().replaceItemAtURL(download.destinationURL, withItemAtURL: location, backupItemName: nil, options: nil, resultingItemURL: &resultingURL, error: &fileError) {
-            download.resultingURL = resultingURL
-        } else {
-            download.error = fileError
         }
+        catch let error as NSError {
+            error.description
+        }
+        
+        
+//        if NSFileManager.defaultManager().replaceItemAtURL(download.destinationURL, withItemAtURL: location, backupItemName: nil, options: nil, resultingItemURL: &resultingURL, error: &fileError) {
+//            download.resultingURL = resultingURL
+//        } else {
+//            download.error = fileError
+//        }
+        
+        
     }
 
     func URLSession(session: NSURLSession, task: NSURLSessionTask, didCompleteWithError sessionError: NSError?) {
@@ -196,7 +211,7 @@ class DownloadDelegate: NSObject, NSURLSessionDownloadDelegate {
                 error = NSError(domain: kTCBlobDownloadErrorDomain,
                     code: TCBlobDownloadError.TCBlobDownloadHTTPError.rawValue,
                     userInfo: [kTCBlobDownloadErrorDescriptionKey: "Erroneous HTTP status code: \(response.statusCode)",
-                               kTCBlobDownloadErrorFailingURLKey: task.originalRequest.URL!,
+                               kTCBlobDownloadErrorFailingURLKey: task.originalRequest!.URL!,
                                kTCBlobDownloadErrorHTTPStatusKey: response.statusCode])
             }
         }
