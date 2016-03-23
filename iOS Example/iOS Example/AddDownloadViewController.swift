@@ -40,7 +40,7 @@ class AddDownloadViewController: UIViewController, UITableViewDataSource, UITabl
     }
 
     @IBAction func onAddDownload(sender: UIBarButtonItem) {
-        self.addDownload(fromString: self.fieldURL.text)
+        self.addDownload(fromString: self.fieldURL.text!)
     }
 
     func addDownload(fromString string: String) {
@@ -57,7 +57,7 @@ class AddDownloadViewController: UIViewController, UITableViewDataSource, UITabl
     }
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("addDownloadCell", forIndexPath: indexPath) as! UITableViewCell
+        let cell = tableView.dequeueReusableCellWithIdentifier("addDownloadCell", forIndexPath: indexPath) 
 
         cell.textLabel?.text = self.downloads[indexPath.row].name
         

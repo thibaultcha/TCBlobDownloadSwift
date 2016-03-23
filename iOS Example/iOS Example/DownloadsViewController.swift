@@ -42,7 +42,7 @@ class DownloadsViewController: UIViewController, UITableViewDataSource, UITableV
     }
 
     private func getDownloadFromButtonPress(sender: UIButton, event: UIEvent) -> (download: TCBlobDownload, indexPath: NSIndexPath) {
-        let touch = event.touchesForView(sender)?.first as! UITouch
+        let touch = (event.touchesForView(sender)?.first)! as UITouch
         let location = touch.locationInView(self.downloadsTableView)
         let indexPath = self.downloadsTableView.indexPathForRowAtPoint(location)
 
@@ -85,7 +85,7 @@ class DownloadsViewController: UIViewController, UITableViewDataSource, UITableV
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(kDownloadCellidentifier) as! DownloadTableViewCell
-        var download: TCBlobDownload = self.downloads[indexPath.row]
+        let download: TCBlobDownload = self.downloads[indexPath.row]
 
         if let fileName = download.fileName {
             cell.labelFileName.text = fileName
@@ -100,9 +100,9 @@ class DownloadsViewController: UIViewController, UITableViewDataSource, UITableV
         }
 
         cell.progress = download.progress
-        cell.labelDownload.text = download.downloadTask.originalRequest.URL?.absoluteString
-        cell.buttonPause.addTarget(self, action: "didPressPauseButton:event:", forControlEvents: UIControlEvents.TouchUpInside)
-        cell.buttonCancel.addTarget(self, action: "didPressCancelButton:event:", forControlEvents: UIControlEvents.TouchUpInside)
+        cell.labelDownload.text = download.downloadTask.originalRequest!.URL?.absoluteString
+        cell.buttonPause.addTarget(self, action: #selector(DownloadsViewController.didPressPauseButton(_:event:)), forControlEvents: UIControlEvents.TouchUpInside)
+        cell.buttonCancel.addTarget(self, action: #selector(DownloadsViewController.didPressCancelButton(_:event:)), forControlEvents: UIControlEvents.TouchUpInside)
 
         return cell
     }
