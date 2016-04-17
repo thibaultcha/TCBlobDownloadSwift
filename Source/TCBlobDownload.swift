@@ -47,8 +47,7 @@ public class TCBlobDownload {
     /// A computed destination URL depending on the `destinationPath`, `fileName`, and `suggestedFileName` from the underlying `NSURLResponse`.
     public var destinationURL: NSURL {
         let destinationPath = self.directory ?? NSURL(fileURLWithPath: NSTemporaryDirectory())
-
-        return NSURL(string: self.fileName!, relativeToURL: destinationPath)!.URLByStandardizingPath!
+        return destinationPath.URLByAppendingPathComponent(self.fileName!)
     }
 
     /**
