@@ -45,17 +45,17 @@
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oeL-lb-5yw">
-                                                    <rect key="frame" x="270" y="35" width="42" height="26"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                                    <state key="normal" title="Cancel">
-                                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                                    </state>
-                                                </button>
-                                                <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="252" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BCP-ft-I0l">
+                                                <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="252" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BCP-ft-I0l">
                                                     <rect key="frame" x="543" y="8" width="49" height="27"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <state key="normal" title="Resume">
+                                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </state>
+                                                </button>
+                                                <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="252" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gDx-HH-bo3">
+                                                    <rect key="frame" x="550" y="35" width="42" height="26"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                                    <state key="normal" title="Cancel">
                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
                                                 </button>
@@ -64,43 +64,40 @@
                                                 <constraint firstItem="gFA-s0-vpU" firstAttribute="leading" secondItem="a13-KM-DuV" secondAttribute="leading" constant="8" id="2CB-3C-oTK"/>
                                                 <constraint firstItem="kK8-gh-fgp" firstAttribute="top" secondItem="wmP-qL-QiY" secondAttribute="bottom" constant="1" id="81M-VN-IOh"/>
                                                 <constraint firstItem="wmP-qL-QiY" firstAttribute="leading" secondItem="a13-KM-DuV" secondAttribute="leading" constant="8" id="8SN-0g-cgu"/>
+                                                <constraint firstAttribute="trailing" secondItem="gDx-HH-bo3" secondAttribute="trailing" constant="8" id="EbD-s6-JoQ"/>
                                                 <constraint firstItem="wmP-qL-QiY" firstAttribute="leading" secondItem="kK8-gh-fgp" secondAttribute="leading" id="H5z-IS-Vgb"/>
                                                 <constraint firstItem="wmP-qL-QiY" firstAttribute="top" secondItem="a13-KM-DuV" secondAttribute="top" constant="8" id="Hj6-px-DqY"/>
-                                                <constraint firstItem="gFA-s0-vpU" firstAttribute="top" secondItem="oeL-lb-5yw" secondAttribute="bottom" constant="8" id="IRe-9n-Cu9"/>
                                                 <constraint firstAttribute="trailing" secondItem="BCP-ft-I0l" secondAttribute="trailing" constant="8" id="Lpo-R4-MOU"/>
                                                 <constraint firstItem="kK8-gh-fgp" firstAttribute="trailing" secondItem="wmP-qL-QiY" secondAttribute="trailing" id="MRJ-aW-xb7"/>
-                                                <constraint firstItem="oeL-lb-5yw" firstAttribute="top" secondItem="BCP-ft-I0l" secondAttribute="bottom" id="QVc-tz-VBr"/>
                                                 <constraint firstItem="kK8-gh-fgp" firstAttribute="centerY" secondItem="a13-KM-DuV" secondAttribute="centerY" constant="-16" id="RIf-nj-NB9"/>
                                                 <constraint firstItem="kK8-gh-fgp" firstAttribute="top" secondItem="a13-KM-DuV" secondAttribute="topMargin" constant="29" id="Ukc-zh-5zL"/>
                                                 <constraint firstItem="BCP-ft-I0l" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="wmP-qL-QiY" secondAttribute="trailing" constant="8" id="WB1-MB-fvl"/>
-                                                <constraint firstAttribute="trailing" secondItem="oeL-lb-5yw" secondAttribute="trailing" constant="8" id="Wbh-Er-UM2"/>
-                                                <constraint firstItem="oeL-lb-5yw" firstAttribute="height" secondItem="BCP-ft-I0l" secondAttribute="height" id="WyT-hG-vD5"/>
                                                 <constraint firstAttribute="trailing" secondItem="gFA-s0-vpU" secondAttribute="trailing" constant="8" id="aZ4-8j-eBB"/>
+                                                <constraint firstItem="gDx-HH-bo3" firstAttribute="height" secondItem="BCP-ft-I0l" secondAttribute="height" id="b1e-u3-OmW"/>
                                                 <constraint firstItem="BCP-ft-I0l" firstAttribute="top" secondItem="a13-KM-DuV" secondAttribute="top" constant="8" id="ck2-BT-0SL"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="BCP-ft-I0l" secondAttribute="trailing" constant="7" id="dmM-8H-VcR"/>
                                                 <constraint firstAttribute="bottom" secondItem="gFA-s0-vpU" secondAttribute="bottom" constant="2" id="eoj-3S-j8g"/>
+                                                <constraint firstAttribute="bottom" secondItem="gDx-HH-bo3" secondAttribute="bottom" constant="8" id="fdS-I3-g8v"/>
+                                                <constraint firstItem="gFA-s0-vpU" firstAttribute="top" secondItem="gDx-HH-bo3" secondAttribute="bottom" constant="8" id="gCl-sU-bor"/>
                                                 <constraint firstItem="kK8-gh-fgp" firstAttribute="centerX" secondItem="a13-KM-DuV" secondAttribute="centerX" constant="8" id="iYv-hw-dKG"/>
                                                 <constraint firstItem="kK8-gh-fgp" firstAttribute="leading" secondItem="a13-KM-DuV" secondAttribute="leadingMargin" constant="10" id="k5g-yh-3UZ"/>
-                                                <constraint firstAttribute="bottom" secondItem="oeL-lb-5yw" secondAttribute="bottom" constant="8" id="nXS-Su-PrH"/>
+                                                <constraint firstItem="gDx-HH-bo3" firstAttribute="top" secondItem="BCP-ft-I0l" secondAttribute="bottom" id="yna-3B-DAX"/>
                                                 <constraint firstItem="kK8-gh-fgp" firstAttribute="leading" secondItem="wmP-qL-QiY" secondAttribute="leading" id="zlY-BP-p9X"/>
                                             </constraints>
                                             <variation key="default">
-                                                <mask key="subviews">
-                                                    <exclude reference="oeL-lb-5yw"/>
-                                                </mask>
                                                 <mask key="constraints">
                                                     <exclude reference="H5z-IS-Vgb"/>
-                                                    <exclude reference="k5g-yh-3UZ"/>
-                                                    <exclude reference="iYv-hw-dKG"/>
                                                     <exclude reference="RIf-nj-NB9"/>
                                                     <exclude reference="Ukc-zh-5zL"/>
-                                                    <exclude reference="IRe-9n-Cu9"/>
+                                                    <exclude reference="iYv-hw-dKG"/>
+                                                    <exclude reference="k5g-yh-3UZ"/>
+                                                    <exclude reference="gCl-sU-bor"/>
                                                     <exclude reference="dmM-8H-VcR"/>
                                                 </mask>
                                             </variation>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <outlet property="buttonCancel" destination="oeL-lb-5yw" id="CKl-QO-IHS"/>
+                                            <outlet property="buttonCancel" destination="gDx-HH-bo3" id="czt-wZ-P7q"/>
                                             <outlet property="buttonPause" destination="BCP-ft-I0l" id="btB-nC-QIV"/>
                                             <outlet property="labelDownload" destination="kK8-gh-fgp" id="659-Jq-pS6"/>
                                             <outlet property="labelFileName" destination="wmP-qL-QiY" id="7Cm-8U-4px"/>

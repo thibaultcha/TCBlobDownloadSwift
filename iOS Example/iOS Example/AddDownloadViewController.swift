@@ -24,7 +24,6 @@ class AddDownloadViewController: UIViewController {
         Download(name: "7 MB", url: "https://downloadarchive.documentfoundation.org/libreoffice/old/5.1.2.2/mac/x86_64/LibreOffice_5.1.2.2_MacOS_x86-64_langpack_tr.dmg"),
         Download(name: "20 MB", url: "https://download.gimp.org/mirror/pub/gimp/v2.9/gimp-2.9.2.tar.bz2"),
         Download(name: "200 MB", url: "https://downloadarchive.documentfoundation.org/libreoffice/old/5.1.2.2/mac/x86_64/LibreOffice_5.1.2.2_MacOS_x86-64.dmg"),
-        Download(name: "470 MB", url: "http://fs.to/get/playvideo/698jmriukz3toi0ivrsn4o86u.0.1765758616.974127405.1460730114.mp4"),
     ]
 
     @IBAction func onCancel(sender: UIBarButtonItem) {
