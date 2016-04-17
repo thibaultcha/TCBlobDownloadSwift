@@ -1,6 +1,6 @@
 # TCBlobDownloadSwift
 
-Powerful file downloads for iOS 7+ with [NSURLSession][nsurlsession-url] in Swift.
+Powerful file downloads for iOS 8+ with [NSURLSession][nsurlsession-url] in Swift.
 
 TCBlobDownloadSwift makes it easy to quickly download one or several large file(s) from your backend or the Internet right into your app. Give it an URL, a directory (or not, it can also download into the user's tmp folder), a name (or not, it can also give your file a default name), and it will take care of everything.
 
@@ -17,7 +17,7 @@ See the [Usage](#usage) section for examples.
 
 ### Requirements
 
-- iOS 7.0+ / Mac OS X 10.9+
+- iOS 8.0+ / Mac OS X 10.9+
 
 ### Installation
 
