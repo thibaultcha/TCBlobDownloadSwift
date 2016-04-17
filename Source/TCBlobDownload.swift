@@ -33,8 +33,14 @@ public class TCBlobDownload {
     /// Will contain an error if the downloaded file couldn't be moved to its final destination.
     var error: NSError?
 
-    /// Current progress of the download, a value between 0 and 1. 0 means nothing was received and 1 means the download is completed.
+    /// Current progress of the download, a value between 0 and 1. 0 means nothing was received and 1 means the download is completed. If expected size if unknown value equals -1
     public var progress: Float = 0
+    
+    /// Current progress of the download, bytes of downloaded part
+    public var totalBytesWritten: Int64 = 0
+    
+    /// Current progress of the download, whole size in bytes. If expected size if unknown value equals -1
+    public var totalBytesExpectedToWrite: Int64 = 0
 
     /// If the moving of the file after downloading was successful, will contain the `NSURL` pointing to the final file.
     public var resultingURL: NSURL?

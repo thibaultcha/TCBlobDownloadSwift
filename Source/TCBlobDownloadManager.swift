@@ -164,6 +164,8 @@ class DownloadDelegate: NSObject, NSURLSessionDownloadDelegate {
         let progress = totalBytesExpectedToWrite == NSURLSessionTransferSizeUnknown ? -1 : Float(totalBytesWritten) / Float(totalBytesExpectedToWrite)
 
         download.progress = progress
+        download.totalBytesWritten = totalBytesWritten
+        download.totalBytesExpectedToWrite = totalBytesExpectedToWrite
 
         dispatch_async(dispatch_get_main_queue()) {
             download.delegate?.download(download, didProgress: progress, totalBytesWritten: totalBytesWritten, totalBytesExpectedToWrite: totalBytesExpectedToWrite)
