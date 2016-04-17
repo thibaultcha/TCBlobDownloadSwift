@@ -210,7 +210,7 @@ class DownloadDelegate: NSObject, NSURLSessionDownloadDelegate {
 
         dispatch_async(dispatch_get_main_queue()) {
             download.delegate?.download(download, didFinishWithError: error, atLocation: download.resultingURL)
-            download.completion?(error: error, location: download.resultingURL)
+            download.completion?(error: error, location: download.resultingURL ?? download.destinationURL)
             return
         }
     }
