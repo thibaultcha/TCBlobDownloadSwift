@@ -175,18 +175,18 @@ class DownloadDelegate: NSObject, NSURLSessionDownloadDelegate {
     }
 
     func URLSession(session: NSURLSession, downloadTask: NSURLSessionDownloadTask, didFinishDownloadingToURL location: NSURL) {
-        let download = self.downloads[downloadTask.taskIdentifier]!
-
-        do {
-            var resultingURL: NSURL?
-            if NSFileManager.defaultManager().fileExistsAtPath(download.destinationURL.path!) {
-                try NSFileManager.defaultManager().replaceItemAtURL(download.destinationURL, withItemAtURL: location, backupItemName: nil, options: [], resultingItemURL: &resultingURL)
-            } else {
-                try NSFileManager.defaultManager().moveItemAtURL(location, toURL: download.destinationURL)
+        if let download = self.downloads[downloadTask.taskIdentifier] {
+            do {
+                var resultingURL: NSURL?
+                if NSFileManager.defaultManager().fileExistsAtPath(download.destinationURL.path!) {
+                    try NSFileManager.defaultManager().replaceItemAtURL(download.destinationURL, withItemAtURL: location, backupItemName: nil, options: [], resultingItemURL: &resultingURL)
+                } else {
+                    try NSFileManager.defaultManager().moveItemAtURL(location, toURL: download.destinationURL)
+                }
+                download.resultingURL = resultingURL ?? download.destinationURL
+            } catch let error as NSError {
+                download.error = error
             }
-            download.resultingURL = resultingURL ?? download.destinationURL
-        } catch let error as NSError {
-            download.error = error
         }
     }
 
