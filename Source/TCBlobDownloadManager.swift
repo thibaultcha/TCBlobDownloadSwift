@@ -182,7 +182,7 @@ class DownloadDelegate: NSObject, NSURLSessionDownloadDelegate {
             } else {
                 try NSFileManager.defaultManager().moveItemAtURL(location, toURL: download.destinationURL)
             }
-            download.resultingURL = resultingURL
+            download.resultingURL = resultingURL ?? download.destinationURL
         } catch let error as NSError {
             download.error = error
         }
@@ -210,7 +210,7 @@ class DownloadDelegate: NSObject, NSURLSessionDownloadDelegate {
 
         dispatch_async(dispatch_get_main_queue()) {
             download.delegate?.download(download, didFinishWithError: error, atLocation: download.resultingURL)
-            download.completion?(error: error, location: download.resultingURL ?? download.destinationURL)
+            download.completion?(error: error, location: download.resultingURL)
             return
         }
     }
