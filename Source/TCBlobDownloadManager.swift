@@ -160,17 +160,18 @@ class DownloadDelegate: NSObject, NSURLSessionDownloadDelegate {
     }
 
     func URLSession(session: NSURLSession, downloadTask: NSURLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
-        let download = self.downloads[downloadTask.taskIdentifier]!
-        let progress = totalBytesExpectedToWrite == NSURLSessionTransferSizeUnknown ? -1 : Float(totalBytesWritten) / Float(totalBytesExpectedToWrite)
+        if let download = self.downloads[downloadTask.taskIdentifier] {
+            let progress = totalBytesExpectedToWrite == NSURLSessionTransferSizeUnknown ? -1 : Float(totalBytesWritten) / Float(totalBytesExpectedToWrite)
 
-        download.progress = progress
-        download.totalBytesWritten = totalBytesWritten
-        download.totalBytesExpectedToWrite = totalBytesExpectedToWrite
+            download.progress = progress
+            download.totalBytesWritten = totalBytesWritten
+            download.totalBytesExpectedToWrite = totalBytesExpectedToWrite
 
-        dispatch_async(dispatch_get_main_queue()) {
-            download.delegate?.download(download, didProgress: progress, totalBytesWritten: totalBytesWritten, totalBytesExpectedToWrite: totalBytesExpectedToWrite)
-            download.progression?(progress: progress, totalBytesWritten: totalBytesWritten, totalBytesExpectedToWrite: totalBytesExpectedToWrite)
-            return
+            dispatch_async(dispatch_get_main_queue()) {
+                download.delegate?.download(download, didProgress: progress, totalBytesWritten: totalBytesWritten, totalBytesExpectedToWrite: totalBytesExpectedToWrite)
+                download.progression?(progress: progress, totalBytesWritten: totalBytesWritten, totalBytesExpectedToWrite: totalBytesExpectedToWrite)
+                return
+            }
         }
     }
 
