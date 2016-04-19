@@ -33,6 +33,15 @@ public class TCBlobDownloadManager {
 
     /// The underlying `NSURLSession`.
     public let session: NSURLSession
+    
+    public var allowRedirection: Bool {
+        set {
+            self.delegate.allowRedirection = newValue
+        }
+        get {
+            return self.delegate.allowRedirection
+        }
+    }
 
     /**
         Custom `NSURLSessionConfiguration` init.
@@ -146,15 +155,21 @@ public class TCBlobDownloadManager {
 
 
 class DownloadDelegate: NSObject, NSURLSessionDownloadDelegate {
+    
     var downloads: [Int: TCBlobDownload] = [:]
     let acceptableStatusCodes: Range<Int> = 200...299
+    var allowRedirection = false
 
     func validateResponse(response: NSHTTPURLResponse) -> Bool {
         return self.acceptableStatusCodes.contains(response.statusCode)
     }
 
     // MARK: NSURLSessionDownloadDelegate
-
+    
+    func URLSession(session: NSURLSession, task: NSURLSessionTask, willPerformHTTPRedirection response: NSHTTPURLResponse, newRequest request: NSURLRequest, completionHandler: (NSURLRequest?) -> Void) {
+        completionHandler(self.allowRedirection ? request : nil)
+    }
+    
     func URLSession(session: NSURLSession, downloadTask: NSURLSessionDownloadTask, didResumeAtOffset fileOffset: Int64, expectedTotalBytes: Int64) {
         print("Resume at offset: \(fileOffset) total expected: \(expectedTotalBytes)")
     }
