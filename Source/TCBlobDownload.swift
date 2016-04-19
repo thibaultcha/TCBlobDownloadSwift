@@ -107,6 +107,13 @@ public class TCBlobDownload {
     public func resume() {
         self.downloadTask.resume()
     }
+    
+    /**
+        Convinience method
+    */
+    public var isSuspended: Bool {
+        return self.downloadTask.state == .Suspended
+    }
 
     /**
         Cancel a download and produce resume data. If stored, this data can allow resuming the download at its previous state.
