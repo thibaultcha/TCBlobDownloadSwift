@@ -216,7 +216,7 @@ class DownloadDelegate: NSObject, NSURLSessionDownloadDelegate {
                 // so let's ignore them as they sometimes appear there for now. (But WTF?)
                 if !validateResponse(response) && (error == nil || error!.domain == NSURLErrorDomain) {
                     error = NSError(domain: kTCBlobDownloadErrorDomain,
-                        code: TCBlobDownloadError.TCBlobDownloadHTTPError.rawValue,
+                        code: response.statusCode,
                         userInfo: [kTCBlobDownloadErrorDescriptionKey: "Erroneous HTTP status code: \(response.statusCode)",
                                    kTCBlobDownloadErrorFailingURLKey: task.originalRequest!.URL!,
                                    kTCBlobDownloadErrorHTTPStatusKey: response.statusCode])
