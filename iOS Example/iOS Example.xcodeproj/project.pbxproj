@@ -15,7 +15,6 @@
 		C3A10AA31A64FB1C005EAE92 /* TCBlobDownloadSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3A10AA21A64FB1C005EAE92 /* TCBlobDownloadSwift.framework */; };
 		C3A10AA71A6632B2005EAE92 /* AddDownloadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A10AA61A6632B2005EAE92 /* AddDownloadViewController.swift */; };
 		C3DF78B71A67A871000B558E /* DownloadTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DF78B61A67A871000B558E /* DownloadTableViewCell.swift */; };
-		C3DF78B91A67A8DA000B558E /* DownloadTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = C3DF78B81A67A8DA000B558E /* DownloadTableViewCell.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,7 +28,6 @@
 		C3A10AA21A64FB1C005EAE92 /* TCBlobDownloadSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TCBlobDownloadSwift.framework; path = "build/Debug-iphoneos/TCBlobDownloadSwift.framework"; sourceTree = "<group>"; };
 		C3A10AA61A6632B2005EAE92 /* AddDownloadViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddDownloadViewController.swift; sourceTree = "<group>"; };
 		C3DF78B61A67A871000B558E /* DownloadTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadTableViewCell.swift; sourceTree = "<group>"; };
-		C3DF78B81A67A8DA000B558E /* DownloadTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DownloadTableViewCell.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,7 +65,7 @@
 				C3A10A821A64FA74005EAE92 /* AppDelegate.swift */,
 				C3A10A841A64FA74005EAE92 /* DownloadsViewController.swift */,
 				C3A10AA61A6632B2005EAE92 /* AddDownloadViewController.swift */,
-				C3DF78BA1A67A8DF000B558E /* DownloadCell */,
+				C3DF78B61A67A871000B558E /* DownloadTableViewCell.swift */,
 				C3A10A861A64FA74005EAE92 /* Main.storyboard */,
 				C3A10A891A64FA74005EAE92 /* Images.xcassets */,
 				C3A10A8B1A64FA74005EAE92 /* LaunchScreen.xib */,
@@ -91,15 +89,6 @@
 			);
 			name = Frameworks;
 			path = ..;
-			sourceTree = "<group>";
-		};
-		C3DF78BA1A67A8DF000B558E /* DownloadCell */ = {
-			isa = PBXGroup;
-			children = (
-				C3DF78B61A67A871000B558E /* DownloadTableViewCell.swift */,
-				C3DF78B81A67A8DA000B558E /* DownloadTableViewCell.xib */,
-			);
-			name = DownloadCell;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -128,7 +117,8 @@
 		C3A10A751A64FA74005EAE92 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0610;
+				LastSwiftUpdateCheck = 0730;
+				LastUpgradeCheck = 0730;
 				ORGANIZATIONNAME = "Thibault Charbonnier";
 				TargetAttributes = {
 					C3A10A7C1A64FA74005EAE92 = {
@@ -160,7 +150,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				C3A10A881A64FA74005EAE92 /* Main.storyboard in Resources */,
-				C3DF78B91A67A8DA000B558E /* DownloadTableViewCell.xib in Resources */,
 				C3A10A8D1A64FA74005EAE92 /* LaunchScreen.xib in Resources */,
 				C3A10A8A1A64FA74005EAE92 /* Images.xcassets in Resources */,
 			);
@@ -222,6 +211,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -285,12 +275,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"/Users/thibaultcha/Projects/TC_BlobDownloadSwift/build/Debug-iphoneos",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "iOS Example/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.thibaultcha.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -299,12 +287,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"/Users/thibaultcha/Projects/TC_BlobDownloadSwift/build/Debug-iphoneos",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = "iOS Example/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.thibaultcha.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

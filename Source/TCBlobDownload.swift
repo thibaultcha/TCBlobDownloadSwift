@@ -33,8 +33,14 @@ public class TCBlobDownload {
     /// Will contain an error if the downloaded file couldn't be moved to its final destination.
     var error: NSError?
 
-    /// Current progress of the download, a value between 0 and 1. 0 means nothing was received and 1 means the download is completed.
+    /// Current progress of the download, a value between 0 and 1. 0 means nothing was received and 1 means the download is completed. If expected size if unknown value equals -1
     public var progress: Float = 0
+    
+    /// Current progress of the download, bytes of downloaded part
+    public var totalBytesWritten: Int64 = 0
+    
+    /// Current progress of the download, whole size in bytes. If expected size if unknown value equals -1
+    public var totalBytesExpectedToWrite: Int64 = 0
 
     /// If the moving of the file after downloading was successful, will contain the `NSURL` pointing to the final file.
     public var resultingURL: NSURL?
@@ -47,17 +53,16 @@ public class TCBlobDownload {
     /// A computed destination URL depending on the `destinationPath`, `fileName`, and `suggestedFileName` from the underlying `NSURLResponse`.
     public var destinationURL: NSURL {
         let destinationPath = self.directory ?? NSURL(fileURLWithPath: NSTemporaryDirectory())
-
-        return NSURL(string: self.fileName!, relativeToURL: destinationPath!)!.URLByStandardizingPath!
+        return destinationPath.URLByAppendingPathComponent(self.fileName!)
     }
 
     /**
         Initialize a new download assuming the `NSURLSessionDownloadTask` was already created.
     
-        :param: downloadTask The underlying download task for this download.
-        :param: directory The directory where to move the downloaded file once completed.
-        :param: fileName The preferred file name once the download is completed.
-        :param: delegate An optional delegate for this download.
+        - parameter downloadTask: The underlying download task for this download.
+        - parameter directory: The directory where to move the downloaded file once completed.
+        - parameter fileName: The preferred file name once the download is completed.
+        - parameter delegate: An optional delegate for this download.
     */
     init(downloadTask: NSURLSessionDownloadTask, toDirectory directory: NSURL?, fileName: String?, delegate: TCBlobDownloadDelegate?) {
         self.downloadTask = downloadTask
@@ -102,6 +107,13 @@ public class TCBlobDownload {
     public func resume() {
         self.downloadTask.resume()
     }
+    
+    /**
+        Convinience method
+    */
+    public var isSuspended: Bool {
+        return self.downloadTask.state == .Suspended
+    }
 
     /**
         Cancel a download and produce resume data. If stored, this data can allow resuming the download at its previous state.
@@ -109,9 +121,9 @@ public class TCBlobDownload {
         :see: `TCBlobDownloadManager -downloadFileWithResumeData`
         :see: `NSURLSessionDownloadTask -cancelByProducingResumeData`
 
-        :param: completionHandler A completion handler that is called when the download has been successfully canceled. If the download is resumable, the completion handler is provided with a resumeData object.
+        - parameter completionHandler: A completion handler that is called when the download has been successfully canceled. If the download is resumable, the completion handler is provided with a resumeData object.
     */
-    public func cancelWithResumeData(completionHandler: (NSData!) -> Void) {
+    public func cancelWithResumeData(completionHandler: (NSData?) -> Void) {
         self.downloadTask.cancelByProducingResumeData(completionHandler)
     }
 
@@ -125,10 +137,10 @@ public protocol TCBlobDownloadDelegate: class {
     
         :see: `NSURLSession -URLSession:dataTask:didReceiveData:`
     
-        :param: download The download that received a chunk of data.
-        :param: progress The current progress of the download, between 0 and 1. 0 means nothing was received and 1 means the download is completed.
-        :param: totalBytesWritten The total number of bytes the download has currently written to the disk.
-        :param: totalBytesExpectedToWrite The total number of bytes the download will write to the disk once completed.
+        - parameter download: The download that received a chunk of data.
+        - parameter progress: The current progress of the download, between 0 and 1. 0 means nothing was received and 1 means the download is completed.
+        - parameter totalBytesWritten: The total number of bytes the download has currently written to the disk.
+        - parameter totalBytesExpectedToWrite: The total number of bytes the download will write to the disk once completed.
     */
     func download(download: TCBlobDownload, didProgress progress: Float, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64)
 
@@ -137,16 +149,16 @@ public protocol TCBlobDownloadDelegate: class {
     
         :see: `NSURLSession -URLSession:task:didCompleteWithError:`
     
-        :param: download The download that received a chunk of data.
-        :param: error An eventual error. If `nil`, consider the download as being successful.
-        :param: location The location where the downloaded file can be found.
+        - parameter download: The download that received a chunk of data.
+        - parameter error: An eventual error. If `nil`, consider the download as being successful.
+        - parameter location: The location where the downloaded file can be found.
     */
     func download(download: TCBlobDownload, didFinishWithError error: NSError?, atLocation location: NSURL?)
 }
 
 // MARK: Printable
 
-extension TCBlobDownload: Printable {
+extension TCBlobDownload: CustomStringConvertible {
     public var description: String {
         var parts: [String] = []
         var state: String
@@ -159,11 +171,11 @@ extension TCBlobDownload: Printable {
         }
         
         parts.append("TCBlobDownload")
-        parts.append("URL: \(self.downloadTask.originalRequest.URL)")
+        parts.append("URL: \(self.downloadTask.originalRequest!.URL)")
         parts.append("Download task state: \(state)")
         parts.append("destinationPath: \(self.directory)")
         parts.append("fileName: \(self.fileName)")
         
-        return join(" | ", parts)
+        return parts.joinWithSeparator(" | ")
     }
 }
